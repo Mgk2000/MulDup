@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <property name="leftMargin">
+     <number>1</number>
+    </property>
+    <property name="topMargin">
+     <number>1</number>
+    </property>
+    <property name="rightMargin">
+     <number>1</number>
+    </property>
+    <property name="bottomMargin">
+     <number>1</number>
+    </property>
+    <item row="1" column="0">
+     <widget class="QTextBrowser" name="textBrowser"/>
+    </item>
+    <item row="0" column="0">
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="currentIndex">
+       <number>1</number>
+      </property>
+      <widget class="QWidget" name="tab">
+       <attribute name="title">
+        <string>Tab 1</string>
+       </attribute>
+      </widget>
+      <widget class="QWidget" name="tab_2">
+       <attribute name="title">
+        <string>Tab 2</string>
+       </attribute>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuUpdate">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionUpdate_All"/>
+   </widget>
+   <widget class="QMenu" name="menuSave">
+    <property name="title">
+     <string>DB</string>
+    </property>
+    <addaction name="separator"/>
+   </widget>
+   <widget class="QMenu" name="menuTest">
+    <property name="title">
+     <string>Test</string>
+    </property>
+    <addaction name="actionTest"/>
+    <addaction name="actionTest1"/>
+   </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>Log</string>
+    </property>
+    <addaction name="actionLog"/>
+    <addaction name="actionClearLog"/>
+   </widget>
+   <widget class="QMenu" name="menuHashing">
+    <property name="title">
+     <string>Hashing</string>
+    </property>
+    <addaction name="actionEd2k"/>
+    <addaction name="actionMD5"/>
+   </widget>
+   <widget class="QMenu" name="menuFreenet">
+    <property name="title">
+     <string>Freenet</string>
+    </property>
+    <addaction name="actionFreenet_clipboard"/>
+    <addaction name="actionFreenet_Window"/>
+   </widget>
+   <widget class="QMenu" name="menuDuplicates">
+    <property name="title">
+     <string>Duplicates</string>
+    </property>
+    <addaction name="actionFind_duplicates"/>
+    <addaction name="actionShow_Duplicates"/>
+    <addaction name="actionMsecs"/>
+    <addaction name="actionSize"/>
+   </widget>
+   <addaction name="menuUpdate"/>
+   <addaction name="menuSave"/>
+   <addaction name="menuTest"/>
+   <addaction name="menuView"/>
+   <addaction name="menuHashing"/>
+   <addaction name="menuFreenet"/>
+   <addaction name="menuDuplicates"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
+  <action name="actionUpdate_All">
+   <property name="text">
+    <string>Update All</string>
+   </property>
+  </action>
+  <action name="actionTest">
+   <property name="text">
+    <string>Test</string>
+   </property>
+  </action>
+  <action name="actionTest1">
+   <property name="text">
+    <string>Test1</string>
+   </property>
+  </action>
+  <action name="actionLog">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Log</string>
+   </property>
+  </action>
+  <action name="actionClearLog">
+   <property name="text">
+    <string>Clear</string>
+   </property>
+   <property name="toolTip">
+    <string>Clear Log</string>
+   </property>
+  </action>
+  <action name="actionEd2k">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Ed2k</string>
+   </property>
+  </action>
+  <action name="actionMD5">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>MD5</string>
+   </property>
+  </action>
+  <action name="actionFreenet_clipboard">
+   <property name="text">
+    <string>Freenet clipboard</string>
+   </property>
+  </action>
+  <action name="actionFreenet_Window">
+   <property name="text">
+    <string>Freenet Window</string>
+   </property>
+  </action>
+  <action name="actionFind_duplicates">
+   <property name="text">
+    <string>Find duplicates</string>
+   </property>
+  </action>
+  <action name="actionShow_Duplicates">
+   <property name="text">
+    <string>Show Duplicates</string>
+   </property>
+  </action>
+  <action name="actionMsecs">
+   <property name="text">
+    <string>Msecs</string>
+   </property>
+  </action>
+  <action name="actionSize">
+   <property name="text">
+    <string>Size</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
