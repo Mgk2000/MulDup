@@ -75,7 +75,6 @@ void FilesView::mousePressEvent(QMouseEvent *event)
     qDebug() << index.row() << index.column();
     if (currRow <0 || index.column() <0)
         return;
-//    qInfo() << model.files[index.row()]->name;
     if(event->button() == Qt::RightButton)
     {
         if(index.row() >=0)
