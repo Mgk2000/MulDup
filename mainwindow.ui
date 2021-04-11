@@ -55,7 +55,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuUpdate">
@@ -69,6 +69,8 @@
      <string>DB</string>
     </property>
     <addaction name="separator"/>
+    <addaction name="separator"/>
+    <addaction name="actionSave_table"/>
    </widget>
    <widget class="QMenu" name="menuTest">
     <property name="title">
@@ -88,8 +90,8 @@
     <property name="title">
      <string>Hashing</string>
     </property>
-    <addaction name="actionEd2k"/>
-    <addaction name="actionMD5"/>
+    <addaction name="actionHash"/>
+    <addaction name="actionAuto_hashing"/>
    </widget>
    <widget class="QMenu" name="menuFreenet">
     <property name="title">
@@ -166,12 +168,15 @@
     <string>Ed2k</string>
    </property>
   </action>
-  <action name="actionMD5">
+  <action name="actionHash">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>MD5</string>
+    <string>Hashing</string>
+   </property>
+   <property name="toolTip">
+    <string>Hashing</string>
    </property>
   </action>
   <action name="actionFreenet_clipboard">
@@ -202,6 +207,16 @@
   <action name="actionSize">
    <property name="text">
     <string>Size</string>
+   </property>
+  </action>
+  <action name="actionSave_table">
+   <property name="text">
+    <string>Save table</string>
+   </property>
+  </action>
+  <action name="actionAuto_hashing">
+   <property name="text">
+    <string>Auto hashing</string>
    </property>
   </action>
  </widget>

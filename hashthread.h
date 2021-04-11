@@ -9,20 +9,18 @@ class HashThread : public QThread
 {
     Q_OBJECT
 public:
-    HashThread(bool _flagEd2k);
+    HashThread();
     void run() override;
     void stop()
         { running = false;}
 
     void  fillFiles();
-    void log(const QString& s);
+    void log(const QString& s, bool newLine = true);
     volatile bool running;
     QVector<File*> files;
-private:
-    bool flagEd2k;
 signals:
     void hashed(bool eflag, int nf);
-    void logSignal(const QString&);
+    void logSignal(const QString&, bool newLine);
 };
 
 #endif // HASHTHREAD_H

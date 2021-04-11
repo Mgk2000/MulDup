@@ -248,3 +248,8 @@ void calcEd2k(File *file)
 {
     file->ed2k = getEd2k(file->filePath());
 }
+
+bool isMulDir(const QString &sdir)
+{
+    return sdir.toLower() == "u:/y/muld";
+}

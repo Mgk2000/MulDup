@@ -305,6 +305,9 @@ QVariant FilesModel::headerData(int section, Qt::Orientation orientation, int ro
 
 QVariant FilesModel::data(const QModelIndex &index, int role) const
 {
+    try{
+    if (!index.isValid())
+        return QVariant();
     int r = index.row();
     if (r<0 || files.count() <=r) return QVariant();
     File* f = files[r];
@@ -369,7 +372,11 @@ QVariant FilesModel::data(const QModelIndex &index, int role) const
         return col;
     }
 
+
     return QVariant();
+    }
+    catch (...)
+    {return QVariant();}
 }
 
 bool FilesModel::setData(const QModelIndex &index, const QVariant &value, int role)

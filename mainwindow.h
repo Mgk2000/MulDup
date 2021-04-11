@@ -53,7 +53,7 @@ public:
     int searchFileByEd2k(const QString & ed2k);
     QVector<PartMetFile*> partMetFiles;
     void fillPartFiles();
-    void Log(const QString & s);
+    void Log(const QString & s, bool newLine = true);
     QStringList logList;
     QString logString;
     QFileSystemWatcher  watcher;
@@ -63,11 +63,9 @@ public:
     void deleteZeroSizeFiles();
     int fid;
     void commit();
-    HashThread ed2kThread, md5Thread;
-    void startEd2kHashing();
-    void stopEd2kHashing();
-    void startMD5Hashing();
-    void stopMD5Hashing();
+    HashThread hashThread;
+    void startHashing();
+    void stopHashing();
     void activateFileRow(int nf);
     void timerEvent(QTimerEvent*) override;
     bool busy;
@@ -81,6 +79,8 @@ public:
     void findDupSize();
     void showDuplicates();
     void findDupMsecs();
+    bool autoHashing;
+    quint64 lastAddedTime, maxTime;
 
 private slots:
     void on_actionUpdate_All_triggered();
@@ -93,11 +93,8 @@ private slots:
 //    void FileChanged(const QString &path);
     void on_actionClearLog_triggered();
     void onHashed(bool eflag, int nf);
-    void on_actionEd2k_triggered();
-
-    void on_actionMD5_triggered();
-    void ed2kThreadFinished();
-    void md5ThreadFinished();
+    void hashThreadFinished();
+    void on_actionHash_triggered();
     void on_actionFreenet_clipboard_triggered();
 
     void on_actionFreenet_Window_triggered();
@@ -109,8 +106,13 @@ private slots:
     void on_actionMsecs_triggered();
 
     void on_actionSize_triggered();
+    void on_actionSave_table_triggered();
+
+
+    void on_actionAuto_hashing_triggered();
+
 public slots:
-    void onLog(const QString& s);
+    void onLog(const QString& s, bool newLine);
 
 private:
     Ui::MainWindow *ui;

@@ -22,7 +22,7 @@
 #include "freenetwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent), ed2kThread(true), md5Thread(false),
+    : QMainWindow(parent),
      ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
@@ -48,19 +48,20 @@ MainWindow::MainWindow(QWidget *parent)
     qInstallMessageHandler(msgHandler);
     busy = false;
     //========================================
-    connect(&ed2kThread, SIGNAL(hashed(bool, int)), this, SLOT(onHashed(bool, int)));
-    connect(&md5Thread, SIGNAL(hashed(bool, int)), this, SLOT(onHashed(bool, int)));
-    connect(&ed2kThread, SIGNAL(finished()), this, SLOT(ed2kThreadFinished()));
-    connect(&md5Thread, SIGNAL(finished()), this, SLOT(md5ThreadFinished()));
-    connect (&md5Thread, SIGNAL (logSignal(const QString&)), this, SLOT(onLog(const QString&)));
-    connect (&ed2kThread, SIGNAL (logSignal(const QString&)), this, SLOT(onLog(const QString&)));
+    connect(&hashThread, SIGNAL(hashed(bool, int)), this, SLOT(onHashed(bool, int)));
+    connect(&hashThread, SIGNAL(finished()), this, SLOT(hashThreadFinished()));
+    connect (&hashThread, SIGNAL (logSignal(const QString&, bool)), this, SLOT(onLog(const QString&, bool)));
     dirMonitors.append(new DirMonitorThread(this, "U:\\Y"));
     dirMonitors.append(new DirMonitorThread(this, "X:\\Z"));
     for (int i=0; i< dirMonitors.count(); i++)
     connect (dirMonitors[i], SIGNAL(dirChanged(DirMonitorThread*)), this, SLOT(onDirChanged(DirMonitorThread*)));
     for (int i=0; i< dirMonitors.count(); i++)
         dirMonitors[i]->start();
-//    startTimer(1000);
+    startTimer(1000);
+    autoHashing = false;
+    maxTime = 9223372036854775;
+    ui->actionAuto_hashing->setCheckable(true);
+
 }
 
 MainWindow::~MainWindow()
@@ -135,9 +136,7 @@ void MainWindow::loadFiles()
 void MainWindow::updateAll()
 {
     busy = true;
-
-    ed2kThread.stop();
-    md5Thread.stop();
+    hashThread.stop();
     for (int i=0; i< dirMonitors.count(); i++)
         dirMonitors[i]->stop();
     QApplication::setOverrideCursor(Qt::WaitCursor);
@@ -501,6 +500,12 @@ void MainWindow::activateFileRow( int nf)
 
 void MainWindow::timerEvent(QTimerEvent *)
 {
+    if (autoHashing && lastAddedTime != maxTime)
+    {
+        quint64 now = QDateTime::currentDateTime().toSecsSinceEpoch();
+        if (now - lastAddedTime > 5 && !hashThread.isRunning())
+            hashThread.start();
+    }
 }
 
 void MainWindow::onClipboardChanged()
@@ -586,9 +591,12 @@ void MainWindow::fillPartFiles()
     }
 }
 
-void MainWindow::Log(const QString & s)
+void MainWindow::Log(const QString & s, bool newLine)
 {
-    ui->textBrowser->append(s);
+    if (!newLine)
+        ui->textBrowser->setPlainText(ui->textBrowser->toPlainText().append(" " + s));
+    else
+        ui->textBrowser->append(s);
     QScrollBar *sb = ui->textBrowser->verticalScrollBar();
     sb->setValue(sb->maximum());
 }
@@ -634,38 +642,23 @@ void MainWindow::commit()
     dbm->commit();
 }
 
-void MainWindow::startEd2kHashing()
+void MainWindow::startHashing()
 {
-    if (ed2kThread.running)
+    if (hashThread.running)
         return;
-    ed2kThread.fillFiles();
-    ed2kThread.start();
-    ui->actionEd2k->setChecked(true);
+    hashThread.fillFiles();
+    hashThread.start();
+    ui->actionHash->setChecked(true);
 }
 
-void MainWindow::stopEd2kHashing()
+void MainWindow::stopHashing()
 {
-    if (ed2kThread.running)
-        ed2kThread.stop();
-    ui->actionEd2k->setChecked(false);
+    if (hashThread.running)
+        hashThread.stop();
+    ui->actionHash->setChecked(false);
 
 }
 
-void MainWindow::startMD5Hashing()
-{
-    if (md5Thread.running)
-        return;
-    md5Thread.fillFiles();
-    md5Thread.start();
-    ui->actionMD5->setChecked(true);
-}
-
-void MainWindow::stopMD5Hashing()
-{
-    if (md5Thread.running)
-        md5Thread.stop();
-    ui->actionMD5->setChecked(false);
-}
 void MainWindow::on_actionTest_triggered()
 {
 /*    QElapsedTimer timer;
@@ -725,6 +718,7 @@ void MainWindow::onDirChanged( DirMonitorThread* dirMonitor)
         f->id = files.count()+ 1;
         files.append(f);
         addStoreFile(f);
+        lastAddedTime = QDateTime::currentSecsSinceEpoch();
         qDebug() << "Added" << f->name;
         qInfo() << "Added" << f->name << " -> " << f->info->absoluteDir().path();
     }
@@ -790,41 +784,25 @@ void MainWindow::onHashed(bool /*eflag*/, int nf)
 }
 
 
-void MainWindow::on_actionEd2k_triggered()
+void MainWindow::on_actionHash_triggered()
 {
-    if (!ed2kThread.running)
-        startEd2kHashing();
+    if (!hashThread.running)
+        startHashing();
     else
-        stopEd2kHashing();
-//    ui->actionEd2k->setChecked(ed2kThread.running);
-}
-
-void MainWindow::on_actionMD5_triggered()
-{
-    if (!md5Thread.running)
-        startMD5Hashing();
-    else
-        stopMD5Hashing();
+        stopHashing();
 //    ui->actionMD5->setChecked(md5Thread.running);
 
 }
 
-void MainWindow::ed2kThreadFinished()
+void MainWindow::hashThreadFinished()
 {
-    qInfo() << "ed2kThreadFinished()";
-    for (int i=0; i< ed2kThread.files.count(); i++)
-        storeFile(ed2kThread.files[i]);
-    ui->actionEd2k->setChecked(false);
+    qInfo() << "hashThreadFinished()";
+    for (int i=0; i< hashThread.files.count(); i++)
+        storeFile(hashThread.files[i]);
+    ui->actionHash->setChecked(false);
+    lastAddedTime = maxTime;
 }
 
-void MainWindow::md5ThreadFinished()
-{
-    qInfo() << "md5ThreadFinished()";
-    for (int i=0; i< md5Thread.files.count(); i++)
-        storeFile(md5Thread.files[i]);
-    ui->actionMD5->setChecked(false);
-
-}
 
 void MainWindow::on_actionFreenet_clipboard_triggered()
 {
@@ -860,7 +838,21 @@ void MainWindow::on_actionSize_triggered()
     findDupSize();
 }
 
-void MainWindow::onLog(const QString &s)
+void MainWindow::onLog(const QString &s, bool newLine)
 {
-    Log(s);
+    Log(s, newLine);
+}
+
+void MainWindow::on_actionSave_table_triggered()
+{
+    QSqlQuery query("delete from copyfiles");
+    query.exec();
+    query.exec("insert into copyfiles select * from files");
+}
+
+
+void MainWindow::on_actionAuto_hashing_triggered()
+{
+    autoHashing = ! autoHashing;
+    ui->actionAuto_hashing->setChecked(autoHashing);
 }

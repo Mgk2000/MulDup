@@ -33,6 +33,7 @@ QString freenetKey(const QString & fn);
 
 bool isVideo(const QString & fname);
 bool isPicture(const QString &fn);
+bool isMulDir(const QString & sdir);
 QStringList & videoFilters();
 
 QString fileExt(const QString & fn);
