@@ -37,5 +37,6 @@ bool isMulDir(const QString & sdir);
 QStringList & videoFilters();
 
 QString fileExt(const QString & fn);
+bool fileIsTooNew(const QString& fname);
 
 #endif // HASH_H

@@ -21,6 +21,7 @@ public:
 signals:
     void hashed(bool eflag, int nf);
     void logSignal(const QString&, bool newLine);
+    void hashingFailed();
 };
 
 #endif // HASHTHREAD_H

@@ -30,7 +30,7 @@ ForpostDialog::ForpostDialog(QWidget *parent) :
  //   timeId = startTimer(500);
     connect(&process, SIGNAL(readyReadStandardOutput()), this, SLOT(onProcessStandardOutput()));
     connect(&process, SIGNAL(readyReadStandardError()), this, SLOT(onProcessErrorOutput()));
-    connect(&process, SIGNAL(finished(int,Process::ExitStatus )), this, SLOT(onProcessFinished(int , QProcess::ExitStatus)));
+    connect(&process, SIGNAL(finished(int,QProcess::ExitStatus )), this, SLOT(onProcessFinished(int , QProcess::ExitStatus)));
 }
 
 ForpostDialog::~ForpostDialog()
@@ -163,9 +163,12 @@ void ForpostDialog::createPreview()
     qDebug() << "create preview";
     previewCreationStarted = true;
     QStringList arguments;
-    arguments << "/nc";
-    arguments << VTMPresetsDir +"/" + VTMPreset;
+    QString preset = VTMPresetsDir +"\\" + ui->VTMPresetLabel->text();
+    preset = preset.replace('/', '\\');
+    //preset = ui->VTMPresetLabel->text();
+    arguments << preset;
     arguments << video;
+    arguments << "/nc";
     process.start(VTMexe, arguments);
 //    process.startDetached(VTMexe, arguments);
     process.waitForStarted();
@@ -328,7 +331,7 @@ void ForpostDialog::on_saveButton_clicked()
     }
     createProjectFolder();
     QString fn = postFileName;
-    if (fn=="")
+    if (true || fn=="")
         fn = projectDirName() + "/" +projectName + ".txt";
     QFile f (fn );
     if(f.open(QIODevice::WriteOnly  | QIODevice::Text))

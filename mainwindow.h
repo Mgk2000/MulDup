@@ -93,6 +93,7 @@ private slots:
 //    void FileChanged(const QString &path);
     void on_actionClearLog_triggered();
     void onHashed(bool eflag, int nf);
+    void onHashingFailed();
     void hashThreadFinished();
     void on_actionHash_triggered();
     void on_actionFreenet_clipboard_triggered();

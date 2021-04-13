@@ -51,6 +51,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(&hashThread, SIGNAL(hashed(bool, int)), this, SLOT(onHashed(bool, int)));
     connect(&hashThread, SIGNAL(finished()), this, SLOT(hashThreadFinished()));
     connect (&hashThread, SIGNAL (logSignal(const QString&, bool)), this, SLOT(onLog(const QString&, bool)));
+    connect (&hashThread, SIGNAL (hashingFailed()), this, SLOT(onHashingFailed()));
     dirMonitors.append(new DirMonitorThread(this, "U:\\Y"));
     dirMonitors.append(new DirMonitorThread(this, "X:\\Z"));
     for (int i=0; i< dirMonitors.count(); i++)
@@ -58,7 +59,7 @@ MainWindow::MainWindow(QWidget *parent)
     for (int i=0; i< dirMonitors.count(); i++)
         dirMonitors[i]->start();
     startTimer(1000);
-    autoHashing = false;
+    autoHashing = true;
     maxTime = 9223372036854775;
     ui->actionAuto_hashing->setCheckable(true);
 
@@ -504,7 +505,7 @@ void MainWindow::timerEvent(QTimerEvent *)
     {
         quint64 now = QDateTime::currentDateTime().toSecsSinceEpoch();
         if (now - lastAddedTime > 5 && !hashThread.isRunning())
-            hashThread.start();
+            startHashing();
     }
 }
 
@@ -707,6 +708,7 @@ void MainWindow::on_actionLog_triggered()
 
 void MainWindow::onDirChanged( DirMonitorThread* dirMonitor)
 {
+    bool changed = false;
     mutex.lock();
     dirMonitor->onDirChangeRunning = true;
     qDebug() << "onDirChanged started changes=" << dirMonitor->changedFiles.length() << " adds=" << dirMonitor->addedFiles.count();
@@ -718,9 +720,9 @@ void MainWindow::onDirChanged( DirMonitorThread* dirMonitor)
         f->id = files.count()+ 1;
         files.append(f);
         addStoreFile(f);
-        lastAddedTime = QDateTime::currentSecsSinceEpoch();
         qDebug() << "Added" << f->name;
         qInfo() << "Added" << f->name << " -> " << f->info->absoluteDir().path();
+        changed = true;
     }
     qDebug() << "OnDirChanged 2 changedFiles.count() = " << dirMonitor->changedFiles.count();
     for (int i =0 ; i< dirMonitor->changedFiles.count(); i++)
@@ -739,6 +741,7 @@ void MainWindow::onDirChanged( DirMonitorThread* dirMonitor)
 
                 }
                 storeFile(f);
+                changed = true;
                 goto nexti;
             }
         }
@@ -760,6 +763,8 @@ void MainWindow::onDirChanged( DirMonitorThread* dirMonitor)
     dirMonitor->addedFiles.clear();
     dirMonitor->changedFiles.clear();
     dirMonitor->renamedFiles.clear();
+    if (changed)
+        lastAddedTime = QDateTime::currentSecsSinceEpoch();
     mutex.unlock();
     dirMonitor->onDirChangeRunning = false;
 
@@ -781,6 +786,11 @@ void MainWindow::onHashed(bool /*eflag*/, int nf)
     storeFile(files[nf]);
     for (int i=0; i< views.count(); i++)
         views[i]->refresh();
+}
+
+void MainWindow::onHashingFailed()
+{
+    lastAddedTime = QDateTime::currentSecsSinceEpoch();
 }
 
 

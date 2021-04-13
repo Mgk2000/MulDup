@@ -17,7 +17,7 @@ void HashThread::run()
         qDebug() << "Hashing " << i << files[i]->filePath();
         if (files[i]->ed2k == "")
         {
-            if (isMulDir(files[i]->info->absolutePath()))
+/*            if (isMulDir(files[i]->info->absolutePath()))
             {
                 for (int j =0; j<files.count(); j++)
                     if (files[j]->isPartFile && files[j]->size == files[i]->size && files[j]->name == files[i]->name)
@@ -27,18 +27,30 @@ void HashThread::run()
                         break;
                     }
             }
-            if (files[i]->ed2k == "")
+            if (files[i]->ed2k == "")*/
             {
                 log(QString("Hashing ed2k %1 %2...").arg(i).arg(files[i]->filePath()));
                 files[i]->ed2k = getEd2k(files[i]->canonicalFilePath());
+                if (files[i]->ed2k == "")
+                {
+                    log ("Failed", false);
+                    emit hashingFailed();
+                }
+                else
+                    log("Done", false);
             }
-            log("Done", false);
         }
         if (files[i]->MD5 == "")
         {
             log(QString("Hashing md5 %1 %2...").arg(i).arg(files[i]->filePath()));
             files[i]->MD5 = getHash(files[i]->canonicalFilePath(), QCryptographicHash::Md5);
-            log("Done", false);
+            if (files[i]->MD5 == "")
+            {
+                log ("Failed", false);
+                emit hashingFailed();
+            }
+            else
+                log("Done", false);
         }
     }
     log("Hashing complete.");

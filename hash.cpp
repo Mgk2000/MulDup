@@ -20,9 +20,13 @@ MainWindow* mainWin()
 }
 QString getHash(const QString& fname, QCryptographicHash::Algorithm alg)
 {
+    if (fileIsTooNew(fname))
+        return "";
+
     QCryptographicHash crypto(alg);
     QFile file(fname);
-    file.open(QFile::ReadOnly);
+    if (!file.open(QFile::ReadOnly))
+        return "";
     while(!file.atEnd()){
       crypto.addData(file.read(8192));
     }
@@ -140,13 +144,32 @@ void commit()
 {
     mainWin()->commit();
 }
+bool fileIsTooNew(const QString& fname)
+{
+    QFileInfo fi(fname);
+    qint64 dt = QDateTime::currentMSecsSinceEpoch() -
+            fi.fileTime(QFileDevice::FileModificationTime).toMSecsSinceEpoch();
+    qDebug() << "dt=" << dt;
+    if (dt <5000)
+    {
+        qDebug() << fname << "is too new";
+        return true;
+    }
+    else
 
+    {
+        qDebug() << fname << "is ok old";
+        return false;
+    }
+}
 QString getEd2k(const QString &fname)
 {
     QCryptographicHash crypto(QCryptographicHash::Md4);
-    QFile file(fname);
-    file.open(QFile::ReadOnly);
-
+    if (fileIsTooNew(fname))
+        return "";
+    QFile file (fname);
+    if (!file.open(QIODevice::ReadOnly))
+        return "";
     qint64 sz = file.size();
     qint64 blockSize = 9500 * 1024;
     int nblocks = sz / blockSize;

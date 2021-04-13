@@ -215,6 +215,12 @@
    </property>
   </action>
   <action name="actionAuto_hashing">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Auto hashing</string>
    </property>
