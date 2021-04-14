@@ -195,9 +195,8 @@ QString getEd2k(const QString &fname)
     while (!file.atEnd())
     {
         nbytes = file.read(buf, blockSize);
-        qDebug() << "nb=" << nb++  << "pos=" << file.pos() << "nbytes=" << nbytes;
+//        qDebug() << "nb=" << nb++  << "pos=" << file.pos() << "nbytes=" << nbytes;
         crypto.reset();
-//        crypto.addData(file.read(blockSize));
         crypto.addData(buf, nbytes);
         hash += crypto.result();
     }

@@ -81,6 +81,7 @@ public:
     void findDupMsecs();
     bool autoHashing;
     quint64 lastAddedTime, maxTime;
+    void copyHashFromExistent(File* file);
 
 private slots:
     void on_actionUpdate_All_triggered();

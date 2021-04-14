@@ -444,6 +444,20 @@ void MainWindow::findDupMsecs()
             }
     }
 }
+
+void MainWindow::copyHashFromExistent(File *file)
+{
+    for (int i=0; i< files.count(); i++)
+    {
+        if (files[i] != file && files[i]->size == file->size && file->name == files[i]->name)
+        {
+            if (file->MD5 == "" && files[i]->MD5 != "")
+                file->MD5 = files[i]->MD5;
+            if (file->ed2k == "" && files[i]->ed2k != "")
+                file->ed2k = files[i]->ed2k;
+        }
+    }
+}
 quint64 MainWindow::ed2kSize(const QString &s)
 {
     QString sbeg = s.mid(0, 13);
@@ -650,6 +664,8 @@ void MainWindow::startHashing()
     if (hashThread.running)
         return;
     hashThread.fillFiles();
+    for (int i=0; i< hashThread.files.count(); i++)
+        copyHashFromExistent(hashThread.files[i]);
     hashThread.start();
     ui->actionHash->setChecked(true);
 }
