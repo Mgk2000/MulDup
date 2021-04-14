@@ -664,6 +664,8 @@ void MainWindow::startHashing()
     if (hashThread.running)
         return;
     hashThread.fillFiles();
+    if (!hashThread.files.count())
+        return;
     for (int i=0; i< hashThread.files.count(); i++)
         copyHashFromExistent(hashThread.files[i]);
     hashThread.start();
@@ -758,6 +760,8 @@ void MainWindow::onDirChanged( DirMonitorThread* dirMonitor)
                     qDebug() << "OnDirChanged 2.3 " << files[j]->filePath();
 
                 }
+                if (!f->exists)
+                    qInfo() << "Deleted" << f->name;
                 storeFile(f);
                 changed = true;
                 goto nexti;
