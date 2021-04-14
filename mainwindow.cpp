@@ -59,7 +59,7 @@ MainWindow::MainWindow(QWidget *parent)
     for (int i=0; i< dirMonitors.count(); i++)
         dirMonitors[i]->start();
     startTimer(1000);
-    autoHashing = true;
+    autoHashing = false;
     maxTime = 9223372036854775;
     ui->actionAuto_hashing->setCheckable(true);
 
@@ -216,6 +216,7 @@ void MainWindow::updateAll()
     for (int i=0; i< dirMonitors.count(); i++)
         dirMonitors[i]->resume();
 //    storeDirs();
+    autoHashing = ui->actionAuto_hashing->isChecked();
 }
 
 
