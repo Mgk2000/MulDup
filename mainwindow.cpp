@@ -137,6 +137,7 @@ void MainWindow::loadFiles()
 void MainWindow::updateAll()
 {
     busy = true;
+    autoHashing = false;
     hashThread.stop();
     for (int i=0; i< dirMonitors.count(); i++)
         dirMonitors[i]->stop();
