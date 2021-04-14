@@ -27,8 +27,13 @@ QString getHash(const QString& fname, QCryptographicHash::Algorithm alg)
     QFile file(fname);
     if (!file.open(QFile::ReadOnly))
         return "";
-    while(!file.atEnd()){
-      crypto.addData(file.read(8192));
+    char buf[8192];
+    while(!file.atEnd())
+    {
+      int nbytes = file.read(buf, 8192);
+      if (nbytes<0)
+          return "";
+      crypto.addData(buf, nbytes);
     }
     QByteArray hash = crypto.result();
     return hash.toHex();
@@ -175,19 +180,31 @@ QString getEd2k(const QString &fname)
     int nblocks = sz / blockSize;
     int tail = sz - blockSize * nblocks;
     if (tail !=0) nblocks++;
-    crypto.addData(file.read(blockSize));
+    char * buf = new char [9500 * 1024];
+    int nbytes = file.read(buf, blockSize);
+    if (nbytes < 0)
+    {
+        delete[] buf;
+        return "";
+    }
+    crypto.addData(buf, nbytes);
     QByteArray hash = crypto.result();
     if (nblocks ==1)
         return  hash.toHex();
+    int nb=0;
     while (!file.atEnd())
     {
+        nbytes = file.read(buf, blockSize);
+        qDebug() << "nb=" << nb++  << "pos=" << file.pos() << "nbytes=" << nbytes;
         crypto.reset();
-        crypto.addData(file.read(blockSize));
+//        crypto.addData(file.read(blockSize));
+        crypto.addData(buf, nbytes);
         hash += crypto.result();
     }
     crypto.reset();
     crypto.addData(hash);
     hash = crypto.result();
+    delete[] buf;
     return  hash.toHex();
 }
 
