@@ -14,6 +14,7 @@
 #include <QSqlError>
 #include <QTimer>
 #include <QClipboard>
+#include "mainwindow.h"
 #include "filterform.h"
 #include "hash.h"
 #include "ed2k.h"
@@ -31,7 +32,7 @@ FilesView::FilesView( QWidget* parent,FilterForm *  ff,  QVector<File *> *_files
     verticalHeader()->setDefaultSectionSize(9);
     verticalHeader()->setVisible(false);
     horizontalHeader()->setStretchLastSection(true) ;
-    setColumnWidth(0, 300);
+    setColumnWidth(0, mainWin()->width() / 2);
     horizontalHeader()->setMinimumSectionSize(30);
     setColumnWidth(3, 30);
     setColumnWidth(4, 30);

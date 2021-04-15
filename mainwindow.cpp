@@ -5,6 +5,7 @@
 # include "filesview.h"
 #include <QDebug>
 #include <QClipboard>
+#include <QDesktopWidget>
 
 #include <QDirIterator>
 #include <QSqlQuery>
@@ -13,6 +14,7 @@
 #include <QMimeData>
 #include <QScrollBar>
 #include <QFileSystemWatcher>
+#include <QScreen>
 #include "filterform.h"
 #include "hash.h"
 #include "ed2k.h"
@@ -26,6 +28,12 @@ MainWindow::MainWindow(QWidget *parent)
      ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    setMainWin(this);
+    QScreen *screen = QGuiApplication::primaryScreen();
+    QRect  screenGeometry = screen->geometry();
+    int w = screenGeometry.width();
+    setGeometry(x(), y(), w *2 / 3, 900 );
+
     dbm = new DbManager;
     ready = false;
     dbm->open();
@@ -37,14 +45,12 @@ MainWindow::MainWindow(QWidget *parent)
     forpostDialog = new ForpostDialog(this);
     freenetClipboard = new FreenetClipboard(0);
     freenetWindow = new FreenetWindow(0);
-    setGeometry(x(), y(), 1200, 900 );
     if( QClipboard* c = QApplication::clipboard() )
     {
         QObject::connect( c, SIGNAL( dataChanged() ), SLOT( onClipboardChanged() ) );
     }
     trafficLights = new TrafficLights(0);
     ui->textBrowser->setMaximumHeight(160);
-    setMainWin(this);
     qInstallMessageHandler(msgHandler);
     busy = false;
     //========================================
