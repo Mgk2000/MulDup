@@ -176,17 +176,20 @@
     <string>MB</string>
    </property>
   </widget>
-  <widget class="QCheckBox" name="previewCheckBox">
+  <widget class="QCheckBox" name="excludePathCheckBox">
    <property name="geometry">
     <rect>
      <x>18</x>
      <y>182</y>
-     <width>100</width>
+     <width>71</width>
      <height>22</height>
     </rect>
    </property>
    <property name="text">
-    <string>Preview</string>
+    <string>Exclude path</string>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
    </property>
   </widget>
   <widget class="QLabel" name="label_7">

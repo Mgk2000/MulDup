@@ -59,7 +59,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect (&hashThread, SIGNAL (logSignal(const QString&, bool)), this, SLOT(onLog(const QString&, bool)));
     connect (&hashThread, SIGNAL (hashingFailed()), this, SLOT(onHashingFailed()));
     dirMonitors.append(new DirMonitorThread(this, "U:\\Y"));
-    dirMonitors.append(new DirMonitorThread(this, "X:\\Z"));
+    if (dirXExists())
+        dirMonitors.append(new DirMonitorThread(this, "X:\\Z"));
     for (int i=0; i< dirMonitors.count(); i++)
     connect (dirMonitors[i], SIGNAL(dirChanged(DirMonitorThread*)), this, SLOT(onDirChanged(DirMonitorThread*)));
     for (int i=0; i< dirMonitors.count(); i++)
@@ -464,6 +465,73 @@ void MainWindow::copyHashFromExistent(File *file)
         }
     }
 }
+
+void MainWindow::fillLiatFromtable(const QString &table, QVector<File *> &ffiles)
+{
+     //QSqlQuery query(QString("select * from %1").arg(table));
+     QSqlQuery query(QString("SELECT name, size, birth, MD5, fexists, ed2k, forpost FROM %1 where size>0").arg(table));
+     while (query.next())
+     {
+         File * f = new File();
+         f->name = query.value(0).toString();
+         f->size = query.value(1).toULongLong();
+         qint64 msec = query.value(2).toULongLong();
+         f->birth.setMSecsSinceEpoch( msec );
+         f->MD5 = query.value(3).toString();
+         f->exists = query.value(4).toBool();
+         f->ed2k = query.value(5).toString();
+         f->forpost = query.value(6).toString();
+         ffiles << f;
+     }
+}
+
+void MainWindow::adjustFilesFromCopy()
+{
+    QVector<File*> copyFiles, newFiles;;
+    fillLiatFromtable("copyfiles", copyFiles);
+    qDebug() << "copyFiles=" << copyFiles.count();
+//add to files if not exists
+    for (int j=0; j< copyFiles.count(); j++)
+    {
+        File * cf = copyFiles[j];
+        {
+            for (int i =0; i< files.count(); i++)
+            if (files[i]->name == cf->name && files[i]->size == cf->size)
+            {
+                if (files[i]->MD5 == "")
+                    files[i]->MD5 = cf->MD5;
+                if (files[i]->ed2k == "")
+                    files[i]->ed2k = cf->ed2k;
+                goto nexti;
+            }
+        File* f = new File(*cf);
+        f->exists = false;
+        f->info = nullptr;
+        newFiles << f;
+        }
+        nexti:;
+    }
+    qDebug() << "Files=" << files.count();
+    files << newFiles;
+    qDebug() << "Files=" << files.count();
+    for (int j=0; j< copyFiles.count(); j++)
+        delete copyFiles[j];
+
+}
+
+bool MainWindow::dirXExists()
+{
+    QFile f("x:/z/x01/czechchildrensdays.mp4");
+    if (!f.exists())
+        return false;
+    if (!f.open(QIODevice::ReadOnly))
+        return false;
+    char buf;
+    int nb = f.read(&buf,1);
+    if (nb<0)
+        return false;
+    return true;
+}
 quint64 MainWindow::ed2kSize(const QString &s)
 {
     QString sbeg = s.mid(0, 13);
@@ -671,7 +739,10 @@ void MainWindow::startHashing()
         return;
     hashThread.fillFiles();
     if (!hashThread.files.count())
+    {
+        lastAddedTime = maxTime;
         return;
+    }
     for (int i=0; i< hashThread.files.count(); i++)
         copyHashFromExistent(hashThread.files[i]);
     hashThread.start();
@@ -893,4 +964,14 @@ void MainWindow::on_actionAuto_hashing_triggered()
 {
     autoHashing = ! autoHashing;
     ui->actionAuto_hashing->setChecked(autoHashing);
+}
+
+void MainWindow::on_actionAdjust_From_Copy_triggered()
+{
+    adjustFilesFromCopy();
+}
+
+void MainWindow::on_actionStore_Files_triggered()
+{
+    storeFiles();
 }

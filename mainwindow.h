@@ -82,7 +82,9 @@ public:
     bool autoHashing;
     quint64 lastAddedTime, maxTime;
     void copyHashFromExistent(File* file);
-
+    void fillLiatFromtable(const QString& table, QVector<File*> & ffiles);
+    void adjustFilesFromCopy();
+    bool dirXExists();
 private slots:
     void on_actionUpdate_All_triggered();
 
@@ -112,6 +114,10 @@ private slots:
 
 
     void on_actionAuto_hashing_triggered();
+
+    void on_actionAdjust_From_Copy_triggered();
+
+    void on_actionStore_Files_triggered();
 
 public slots:
     void onLog(const QString& s, bool newLine);

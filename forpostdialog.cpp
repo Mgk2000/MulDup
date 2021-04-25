@@ -187,7 +187,9 @@ void ForpostDialog::createArchive()
     QStringList arguments;
     arguments << "a";
     arguments << "-hp" + password;
-    arguments << "-ep1";
+    arguments << "-m1";
+    if (ui->excludePathCheckBox->isChecked())
+        arguments << "-ep1";
     QString  s = "500";
     if (ui->volumeSizeEdit->text() !="")
         s = ui->volumeSizeEdit->text();
