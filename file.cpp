@@ -21,7 +21,7 @@ QDateTime File::date() const
     if (info)
     {
         QDateTime dt = info->lastModified();
-        if (dt>birth)
+        if (dt>birth || true)
             return dt;
         else return birth;
     }

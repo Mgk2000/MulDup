@@ -220,11 +220,11 @@ void MainWindow::updateAll()
     QApplication::processEvents();
     qInfo() << "Ready. " << files.count() << "files.";
     ready = true;
-    busy = false;
     for (int i=0; i< dirMonitors.count(); i++)
         dirMonitors[i]->resume();
 //    storeDirs();
     autoHashing = ui->actionAuto_hashing->isChecked();
+    busy = false;
 }
 
 
@@ -744,7 +744,10 @@ void MainWindow::startHashing()
         return;
     }
     for (int i=0; i< hashThread.files.count(); i++)
+    {
+        qDebug() << "copyHashFromExistent " << hashThread.files[i]->name;
         copyHashFromExistent(hashThread.files[i]);
+    }
     hashThread.start();
     ui->actionHash->setChecked(true);
 }

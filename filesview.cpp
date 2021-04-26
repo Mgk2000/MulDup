@@ -307,6 +307,8 @@ QVariant FilesModel::headerData(int section, Qt::Orientation orientation, int ro
 QVariant FilesModel::data(const QModelIndex &index, int role) const
 {
     try{
+    if (mainWin()->busy)
+        return QVariant();
     if (!index.isValid())
         return QVariant();
     int r = index.row();
