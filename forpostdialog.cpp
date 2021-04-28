@@ -216,12 +216,12 @@ void ForpostDialog::createProjectFolder()
 void ForpostDialog::createNewForpost()
 {
     QString s;
-    s+= "[VID]\r\n\r\n";
+    s+= "[VID] \r\n\r\n\r\n";
     s+= "Preview backup:\r\n\r\n\r\n";
     s+= QString("Size: %L2 bytes\r\n").arg(file->size);
     s+= "Duration: \r\n";
     s+= QString("MD5: %1 \r\n\r\n").arg(file->MD5);
-    s+= "Video:\r\n\r\n\r\n\r\n";
+    s+= "Video:\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n";
     s+= "P:\r\n";
     s+=  password + "\r\n";
     ui->plainTextEdit->setPlainText(s);
