@@ -32,7 +32,20 @@ MainWindow::MainWindow(QWidget *parent)
     QScreen *screen = QGuiApplication::primaryScreen();
     QRect  screenGeometry = screen->geometry();
     int w = screenGeometry.width();
-    setGeometry(x(), y(), w *2 / 3, 900 );
+    int h = screenGeometry.height();
+    setGeometry(x(), y(), w *2 / 3, h * 2/ 3 );
+    int ww = QGuiApplication::primaryScreen()->geometry().width();
+    int fs = 9;
+    switch(ww)
+    {
+    case 1920:
+        fs = 9; break;
+    case 2160:
+        fs = 10; break;
+    case 3840:
+        fs = 11; break;
+    }
+    ui->textBrowser->setFontPointSize(fs);
 
     dbm = new DbManager;
     ready = false;
@@ -50,7 +63,7 @@ MainWindow::MainWindow(QWidget *parent)
         QObject::connect( c, SIGNAL( dataChanged() ), SLOT( onClipboardChanged() ) );
     }
     trafficLights = new TrafficLights(0);
-    ui->textBrowser->setMaximumHeight(160);
+    ui->textBrowser->setMaximumHeight(QGuiApplication::primaryScreen()->geometry().width() / 12);
     qInstallMessageHandler(msgHandler);
     busy = false;
     //========================================

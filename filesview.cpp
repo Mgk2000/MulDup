@@ -11,9 +11,11 @@
 #include <QCryptographicHash>
 #include <QFileDialog>
 #include <QSqlQuery>
+#include <QScreen>
 #include <QSqlError>
 #include <QTimer>
 #include <QClipboard>
+#include <QGuiApplication>
 #include "mainwindow.h"
 #include "filterform.h"
 #include "hash.h"
@@ -24,7 +26,18 @@ FilesView::FilesView( QWidget* parent,FilterForm *  ff,  QVector<File *> *_files
     fmodel( _files), filterForm(ff)
 {
 //    filterForm->setParent(this);
-    setFont(QFont("Times",9));
+    int ww = QGuiApplication::primaryScreen()->geometry().width();
+    int fs = 9;
+    switch(ww)
+    {
+    case 1920:
+        fs = 9; break;
+    case 2160:
+        fs = 10; break;
+    case 3840:
+        fs = 11; break;
+    }
+    setFont(QFont("Times",fs));
     setParent(parent);
     fmodel.view = this;
     this->setModel(&fmodel);
