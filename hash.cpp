@@ -223,8 +223,9 @@ QStringList vidFilters;
 void fillvideoExts()
 {
     videoExts.clear();
-    videoExts << "mpg" << "avi" << "mp4" << "wmv" << "mkv" << "flv" << "mov" << "vob" << "m4v"  << "m1v"<< "ogg"
-    << "3gp" << "asf" << "mpeg" << "divx" << "webm" << "rm"  << "rmvb" << "qt" << "rmvb" << "ts" << "mts" << "m2t";
+    videoExts << "mpg" << "avi" << "mp4" << "wmv" << "mkv" << "flv" << "mov" << "vob" << "m4v"  << "m1v" << "ogg"
+    << "3gp" << "asf" << "mpeg" << "divx" << "webm" << "rm"  << "rmvb" << "qt"<< "ts" << "mts" << "m2t"
+    << "ogm";
     vidFilters.clear();
     for (int i =0; i< videoExts.count(); i++)
         vidFilters << "*." + videoExts[i];
