@@ -37,6 +37,7 @@ public:
     void fillDir(const wchar_t* dir);
     inline File* findFileBySDN(quint64 size, quint64 sec, const QString & name);
     inline File* findFileBySN(quint64 size, const QString & name);
+    void copyFileInfo (File* fdst, File* fsrc);
     QVector<File*> savedFiles, files;
     QList<QVector<File*>> searchFiles;
     void clearFiles(QVector <File*> & _files);
@@ -51,6 +52,7 @@ public:
     int searchFileBySize(quint64 sz);
     int searchFileByMD5(const QString &md5);
     int searchFileByEd2k(const QString & ed2k);
+    void checkFilesIds();
     QVector<PartMetFile*> partMetFiles;
     void fillPartFiles();
     void Log(const QString & s, bool newLine = true);
@@ -118,6 +120,8 @@ private slots:
     void on_actionAdjust_From_Copy_triggered();
 
     void on_actionStore_Files_triggered();
+
+    void on_actionCkeck_Ids_triggered();
 
 public slots:
     void onLog(const QString& s, bool newLine);

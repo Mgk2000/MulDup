@@ -51,9 +51,9 @@ void calcMD5(File *  file)
     file->MD5 = getHash(file->canonicalFilePath(), QCryptographicHash::Md5);
 //    QString shash = quickHash(fname);
     qDebug() << file->MD5;
-    quint64 msec = file->birth.toMSecsSinceEpoch();
-    QString sq(QString("update files set MD5=\"%1\" where (birth = %2 and size = %3)").
-            arg(file->MD5).arg(msec).arg(file->size));
+//    quint64 msec = file->birth.toMSecsSinceEpoch();
+    QString sq(QString("update files set MD5=\"%1\" where (id = %2)").
+            arg(file->MD5).arg(file->id));
     QSqlQuery query(sq);
     bool  err = query.lastError().isValid();
     if ( err)
@@ -155,7 +155,7 @@ bool fileIsTooNew(const QString& fname)
     qint64 dt = QDateTime::currentMSecsSinceEpoch() -
             fi.fileTime(QFileDevice::FileModificationTime).toMSecsSinceEpoch();
     qDebug() << "dt=" << dt;
-    if (dt <5000)
+    if (dt <5000 && dt >=0)
     {
         qDebug() << fname << "is too new";
         return true;

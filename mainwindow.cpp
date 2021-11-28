@@ -177,6 +177,8 @@ void MainWindow::updateAll()
     {
         File * f = new File();
         f->name = query.value(0).toString();
+        if (f->name.contains("140141"))
+            qDebug() << "140141";
         f->size = query.value(1).toULongLong();
         qint64 msec = query.value(2).toULongLong();
         f->birth.setMSecsSinceEpoch( msec );
@@ -193,8 +195,14 @@ void MainWindow::updateAll()
             File* f1 = findFileBySN(f->size, f->name);
             if (f1)
             {
+                copyFileInfo(f1, f);
                 delete f;
                 continue;
+            }
+            else
+            {
+                files.append(f);
+                f->id = ++fid;
             }
         }
         else
@@ -202,17 +210,18 @@ void MainWindow::updateAll()
             f->forpost = query.value(6).toString();
             File* f1 = findFileBySDN(f->size, msec, f->name);
             if (!f1)
+            {
                  f->exists = false;
+                 f->id = ++fid;
+                 files.append(f);
+            }
             else
             {
-                f1->MD5 = f->MD5;
-                f1->ed2k = f->ed2k;
-                f1->forpost = f->forpost;
+                copyFileInfo(f1, f);
+                continue;
             }
-            continue;
+//            continue;
         }
-        f->id = ++fid;
-        files.append(f);
         //qDebug() << f->name << f->size << f->birth << f->dirind << f->exists;
     }
     t2 =  timer.elapsed();
@@ -344,6 +353,16 @@ File *MainWindow::findFileBySN(quint64 size, const QString &name)
             return f;
     }
     return nullptr;
+}
+
+void MainWindow::copyFileInfo(File *fdst, File *fsrc)
+{
+    if (fdst->MD5.trimmed() == "" && fsrc->MD5.trimmed() != "")
+        fdst->MD5 = fsrc->MD5;
+    if (fdst->ed2k.trimmed() == "" && fsrc->ed2k.trimmed() != "")
+        fdst->ed2k = fsrc->ed2k;
+    if (fdst->forpost.trimmed() == "" && fsrc->forpost.trimmed() != "")
+        fdst->forpost = fsrc->forpost;
 }
 
 
@@ -529,6 +548,7 @@ void MainWindow::adjustFilesFromCopy()
     qDebug() << "Files=" << files.count();
     for (int j=0; j< copyFiles.count(); j++)
         delete copyFiles[j];
+    storeFiles();
 
 }
 
@@ -592,6 +612,21 @@ int MainWindow::searchFileByEd2k(const QString &ed2k)
         if (files[i]->ed2k.toLower() == el)
             return i;
     return -1;
+}
+
+void MainWindow::checkFilesIds()
+{
+    for (int i=0; i< files.count(); i++)
+    {
+        if (files[i]->id != i+1)
+        {
+            QString es = QString ("Ids violation. Files[%1] = %2").arg(i).arg(files[i]->id);
+            qDebug() << es;
+            Log(es);
+            return;
+        }
+    }
+    Log("Ids OK");
 }
 
 void MainWindow::activateFileRow( int nf)
@@ -990,4 +1025,9 @@ void MainWindow::on_actionAdjust_From_Copy_triggered()
 void MainWindow::on_actionStore_Files_triggered()
 {
     storeFiles();
+}
+
+void MainWindow::on_actionCkeck_Ids_triggered()
+{
+    checkFilesIds();
 }

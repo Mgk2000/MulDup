@@ -87,8 +87,13 @@ bool ForpostDialog::readForpost()
     ui->plainTextEdit->setPlainText("");
     QDir dir (projectDirName());
     QDir pardir = dir;
-    pardir.cdUp();
-    ui->parentFolderLabel->setText(pardir.path());
+    bool b = pardir.cdUp();
+    qDebug() << "cdUp=" << b;
+    if (!b || pardir.path() == dir.path())
+        qDebug() << "bad cdUp";
+    QString pd= pardir.path();
+//    ui->parentFolderLabel->setText(pardir.path());
+    ui->parentFolderLabel->setText(pd);
 
     QList<QFileInfo> txtList = dir.entryInfoList(QStringList() <<"*.txt");
     if (txtList.count() > 0)
@@ -313,7 +318,7 @@ void ForpostDialog::on_getrProjectButton_clicked()
         if(dirnames.length() <=0)
             return;
         QString pdn = dirnames[0];
-        ui->projectNameEdit->setText(pdn);
+        ui->projectFolderEdit->setText(pdn);
         int i = pdn.lastIndexOf('/');
         int i1 = pdn.lastIndexOf('\\');
         i = std::max(i, i1);
