@@ -115,7 +115,7 @@ void MainWindow::storeFiles()
         query.bindValue(0, f->name);
         query.bindValue(1, f->size);
         qint64 t = f->birth.toMSecsSinceEpoch();
-        qDebug() << t;
+//        qDebug() << t;
         query.bindValue(2, f->birth.toMSecsSinceEpoch());
         query.bindValue(3, f->MD5);
         query.bindValue(4, f->exists);

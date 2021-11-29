@@ -1,9 +1,11 @@
 #include "forpostdialog.h"
 #include "ui_forpostdialog.h"
 #include "filesview.h"
+#include <QClipboard>
 #include <QDebug>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QMimeData>
 #include <QProcess>
 #include "file.h"
 #include "hash.h"
@@ -31,6 +33,7 @@ ForpostDialog::ForpostDialog(QWidget *parent) :
     connect(&process, SIGNAL(readyReadStandardOutput()), this, SLOT(onProcessStandardOutput()));
     connect(&process, SIGNAL(readyReadStandardError()), this, SLOT(onProcessErrorOutput()));
     connect(&process, SIGNAL(finished(int,QProcess::ExitStatus )), this, SLOT(onProcessFinished(int , QProcess::ExitStatus)));
+    createEditMenu();
 }
 
 ForpostDialog::~ForpostDialog()
@@ -230,6 +233,93 @@ void ForpostDialog::createNewForpost()
     s+= "P:\r\n";
     s+=  password + "\r\n";
     ui->plainTextEdit->setPlainText(s);
+
+}
+
+void ForpostDialog::createEditMenu()
+{
+    editContextMenu = ui->plainTextEdit->createStandardContextMenu();
+    pasteUrlAct = new QAction("Unmasked");
+    pasteUrlAct1 = new QAction("Percent");
+    pasteUrlAct2 = new QAction("Pink");
+    pasteUrlAct3 = new QAction("Captcha");
+    pasteUrlMenu = new QMenu ("Paste Url");
+    pasteUrlMenu->addAction(pasteUrlAct);
+    pasteUrlMenu->addAction(pasteUrlAct1);
+    pasteUrlMenu->addAction(pasteUrlAct2);
+    pasteUrlMenu->addAction(pasteUrlAct3);
+    editContextMenu->addMenu(pasteUrlMenu);
+    ui->plainTextEdit->setContextMenuPolicy(Qt::CustomContextMenu);
+//    connect(this, &MyTextEdit::customContextMenuRequested, this, &MyTextEdit::onRightClick);
+    connect(ui->plainTextEdit,SIGNAL(customContextMenuRequested(const QPoint&)),this,
+            SLOT(onEditContextMenuRequested(const QPoint&)));
+//    connect(this, ui->plainTextEdit,SIGNAL(customContextMenuRequest(const QPoint&)),this,
+    //            SLOT(onEditContextMenuRequested(const QPoint&)));
+
+}
+
+QString ForpostDialog::percentMask(const QString &sss)
+{
+    QString s=sss;
+    if (s.mid(0,5) == "http:")
+        s=s.mid(7);
+    if (s.mid(0,6) == "https:")
+        s=s.mid(8);
+    QString s1 = s.mid(0,3);
+    QString s2 = s.mid(3);
+    QByteArray ba = QUrl::toPercentEncoding(s2, "/?=%0123456789", "abcdefghijklmnopqrstuvwxyz.");
+    QString ss = s1 + QString(ba);
+    qDebug() << QUrl(ss).isValid();
+//    QClipboard* c = QApplication::clipboard();
+//    c->setText(ss.toLower());
+    return ss;
+}
+
+QString ForpostDialog::pinkMask(const QString &s)
+{
+    int n = s.length() - 4;
+    QString ss = "[url]" + s.mid(0,n) + "[/url]" + "[color=#FF00FF]HogoFog[/color]" + s.mid(n);
+    return ss;
+}
+
+QString ForpostDialog::captchaMask(const QString &s)
+{
+    QString ss = "[url=" + s + "]Rindexxx[/url]";
+    return ss;
+}
+
+void ForpostDialog::onEditContextMenuRequested(const QPoint & )
+{
+    QString url;
+    if( QClipboard* c = QApplication::clipboard() )
+    {
+        if( const QMimeData* m = c->mimeData() )
+        {
+            if( m->hasText() )
+                url = m->text();
+        }
+    }
+    bool emp = url.isEmpty();
+    pasteUrlMenu->setEnabled(!emp);
+    QAction * act = editContextMenu ->exec(QCursor::pos());
+    if (act == pasteUrlAct || act == pasteUrlAct1 || act == pasteUrlAct2 || act == pasteUrlAct3)
+    {
+        QTextCursor  cursor = ui->plainTextEdit->textCursor();
+        int pos = cursor.position();
+        QString s1;
+        if (act == pasteUrlAct)
+            s1 = url;
+        else if (act == pasteUrlAct1)
+            s1 = percentMask(url);
+        else if (act == pasteUrlAct2)
+            s1 = pinkMask(url);
+        else if (act == pasteUrlAct3)
+            s1 = captchaMask(url);
+        QString sss = ui->plainTextEdit->toPlainText();
+        QString res = sss.mid(0, pos) + s1 + sss.mid(pos);
+        ui->plainTextEdit->setPlainText(res);
+
+    }
 
 }
 

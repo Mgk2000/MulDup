@@ -2,6 +2,7 @@
 #define FORPOSTDIALOG_H
 
 #include <QDialog>
+#include <QMenu>
 #include <QProcess>
 
 namespace Ui {
@@ -37,7 +38,16 @@ public:
     void createProjectFolder();
     void createNewForpost();
     File * file;
+    QAction *pasteUrlAct,*pasteUrlAct1,*pasteUrlAct2,*pasteUrlAct3;
+    QMenu* editContextMenu;
+    QMenu * pasteUrlMenu;
+    void createEditMenu();
+    QString percentMask(const QString & s);
+    QString pinkMask(const QString & s);
+    QString captchaMask(const QString & s);
+
 private slots:
+    void onEditContextMenuRequested(const QPoint&);
     void on_selectParentFolderButton_clicked();
     void on_selectVTMpresetButton_clicked();
     void on_createPreviewButton_clicked();

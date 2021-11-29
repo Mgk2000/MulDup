@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>888</width>
-    <height>613</height>
+    <width>1217</width>
+    <height>681</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -243,7 +243,7 @@
     <rect>
      <x>20</x>
      <y>220</y>
-     <width>521</width>
+     <width>770</width>
      <height>381</height>
     </rect>
    </property>
@@ -381,7 +381,7 @@
   <widget class="QPushButton" name="createPreviewButton">
    <property name="geometry">
     <rect>
-     <x>640</x>
+     <x>918</x>
      <y>460</y>
      <width>110</width>
      <height>25</height>
@@ -394,7 +394,7 @@
   <widget class="QPushButton" name="createArchiveButton">
    <property name="geometry">
     <rect>
-     <x>642</x>
+     <x>920</x>
      <y>532</y>
      <width>110</width>
      <height>25</height>
@@ -407,7 +407,7 @@
   <widget class="QLineEdit" name="MD5Edit">
    <property name="geometry">
     <rect>
-     <x>560</x>
+     <x>838</x>
      <y>220</y>
      <width>230</width>
      <height>24</height>
@@ -417,7 +417,7 @@
   <widget class="QPushButton" name="MD5Button">
    <property name="geometry">
     <rect>
-     <x>794</x>
+     <x>1072</x>
      <y>220</y>
      <width>40</width>
      <height>25</height>
@@ -430,7 +430,7 @@
   <widget class="QLabel" name="label_9">
    <property name="geometry">
     <rect>
-     <x>563</x>
+     <x>841</x>
      <y>270</y>
      <width>40</width>
      <height>16</height>
@@ -443,7 +443,7 @@
   <widget class="QLineEdit" name="sizeEdit">
    <property name="geometry">
     <rect>
-     <x>612</x>
+     <x>890</x>
      <y>268</y>
      <width>113</width>
      <height>24</height>
@@ -466,7 +466,7 @@
   <widget class="QPushButton" name="saveButton">
    <property name="geometry">
     <rect>
-     <x>560</x>
+     <x>838</x>
      <y>320</y>
      <width>80</width>
      <height>25</height>
