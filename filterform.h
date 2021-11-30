@@ -24,6 +24,7 @@ public:
     QRadioButton * mbytesButton() {return ui->mbytesRadioButton;}
     QCheckBox* showExistingCheckBox() {return ui->showExistingCheckBox;}
     QCheckBox* showDeletedCheckBox() {return ui->showDeletedCheckBox;}
+    QCheckBox* birthCheckBox() {return ui->birthCheckBox;}
     Filter filter;
     bool calcFilter();
     void setSizeFilter(const QString &s);

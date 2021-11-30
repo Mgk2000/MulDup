@@ -38,10 +38,6 @@ public:
     void createProjectFolder();
     void createNewForpost();
     File * file;
-    QAction *pasteUrlAct,*pasteUrlAct1,*pasteUrlAct2,*pasteUrlAct3;
-    QMenu* editContextMenu;
-    QMenu * pasteUrlMenu;
-    void createEditMenu();
     QString percentMask(const QString & s);
     QString pinkMask(const QString & s);
     QString captchaMask(const QString & s);

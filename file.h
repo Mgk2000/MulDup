@@ -19,6 +19,7 @@ public:
     quint64 size;
     QDateTime birth;
     QDateTime date() const;
+    QDateTime birthDate() const;
     QString MD5, ed2k, forpost;
     bool exists;
     bool isPartFile;

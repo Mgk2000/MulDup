@@ -63,6 +63,7 @@ FilesView::FilesView( QWidget* parent,FilterForm *  ff,  QVector<File *> *_files
     connect(filterForm->unsortButton(), SIGNAL(clicked()), this, SLOT(unsortPressed()) );
     connect(filterForm->bytesButton(), SIGNAL(clicked()), this, SLOT(bytesClicked()) );
     connect(filterForm->mbytesButton(), SIGNAL(clicked()), this, SLOT(mbytesClicked()) );
+    connect(filterForm->birthCheckBox(), SIGNAL(clicked()), this, SLOT(birthClicked()) );
     connect(filterForm->showExistingCheckBox(), SIGNAL(clicked()), this, SLOT(onRefresh()) );
     connect(filterForm->showDeletedCheckBox(), SIGNAL(clicked()), this, SLOT(onRefresh()) );
 }
@@ -257,6 +258,12 @@ void FilesView::mbytesClicked()
     refresh();
 }
 
+void FilesView::birthClicked()
+{
+    fmodel.showBirth = filterForm->birthCheckBox()->isChecked();
+    refresh();
+}
+
 void FilesView::unsortPressed()
 {
     fmodel.unSort();
@@ -351,6 +358,8 @@ QVariant FilesModel::data(const QModelIndex &index, int role) const
             }
         case 2:
         {
+            if (showBirth)
+                return f->birthDate().toString("dd.MM.yy  hh:mm:ss");
             return f->date().toString("dd.MM.yy  hh:mm:ss");
         }
         case 3:
@@ -472,13 +481,35 @@ void FilesModel::sortBySize()
 void FilesModel::sortByDate()
 {
     if (sortOrder[2])
+    {
+        if (!showBirth)
+        {
         std::sort(files.begin() , files.end(),
                   []( const File* file1 , const File* file2 )
             { return file1->date() < file2->date();});
+        }
+        else
+        {
+        std::sort(files.begin() , files.end(),
+                  []( const File* file1 , const File* file2 )
+            { return file1->birthDate() < file2->birthDate();});
+        }
+    }
     else
+    {
+        if (!showBirth)
+        {
         std::sort(files.begin() , files.end(),
                   []( const File* file1 , const File* file2 )
             { return file1->date() > file2->date();});
+        }
+        else
+        {
+        std::sort(files.begin() , files.end(),
+                  []( const File* file1 , const File* file2 )
+            { return file1->birthDate() > file2->birthDate();});
+        }
+    }
     sortOrder[2] = !sortOrder[2];
     refresh();
 
@@ -657,6 +688,11 @@ void FilesView::copyFileSize(File *file)
     //c->setText(QString("%1").arg(file->size));
     filterForm->setSizeFilter(QString("%1").arg(file->size));
 
+}
+
+bool FilesView::showBirth() const
+{
+    return filterForm->birthCheckBox()->isChecked();
 }
 
 bool FilesView::showExisting()

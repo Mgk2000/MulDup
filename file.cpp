@@ -28,6 +28,17 @@ QDateTime File::date() const
     return birth;
 }
 
+QDateTime File::birthDate() const
+{
+    if (info)
+    {
+        QDateTime dt = info->birthTime();
+        return dt;
+    }
+    return birth;
+
+}
+
 void File::setFileName(const QString &fullfn)
 {
     info->setFile(fullfn);

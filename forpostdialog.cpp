@@ -33,7 +33,10 @@ ForpostDialog::ForpostDialog(QWidget *parent) :
     connect(&process, SIGNAL(readyReadStandardOutput()), this, SLOT(onProcessStandardOutput()));
     connect(&process, SIGNAL(readyReadStandardError()), this, SLOT(onProcessErrorOutput()));
     connect(&process, SIGNAL(finished(int,QProcess::ExitStatus )), this, SLOT(onProcessFinished(int , QProcess::ExitStatus)));
-    createEditMenu();
+    ui->plainTextEdit->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(ui->plainTextEdit,SIGNAL(customContextMenuRequested(const QPoint&)),this,
+            SLOT(onEditContextMenuRequested(const QPoint&)));
+
 }
 
 ForpostDialog::~ForpostDialog()
@@ -236,28 +239,6 @@ void ForpostDialog::createNewForpost()
 
 }
 
-void ForpostDialog::createEditMenu()
-{
-    editContextMenu = ui->plainTextEdit->createStandardContextMenu();
-    pasteUrlAct = new QAction("Unmasked");
-    pasteUrlAct1 = new QAction("Percent");
-    pasteUrlAct2 = new QAction("Pink");
-    pasteUrlAct3 = new QAction("Captcha");
-    pasteUrlMenu = new QMenu ("Paste Url");
-    pasteUrlMenu->addAction(pasteUrlAct);
-    pasteUrlMenu->addAction(pasteUrlAct1);
-    pasteUrlMenu->addAction(pasteUrlAct2);
-    pasteUrlMenu->addAction(pasteUrlAct3);
-    editContextMenu->addMenu(pasteUrlMenu);
-    ui->plainTextEdit->setContextMenuPolicy(Qt::CustomContextMenu);
-//    connect(this, &MyTextEdit::customContextMenuRequested, this, &MyTextEdit::onRightClick);
-    connect(ui->plainTextEdit,SIGNAL(customContextMenuRequested(const QPoint&)),this,
-            SLOT(onEditContextMenuRequested(const QPoint&)));
-//    connect(this, ui->plainTextEdit,SIGNAL(customContextMenuRequest(const QPoint&)),this,
-    //            SLOT(onEditContextMenuRequested(const QPoint&)));
-
-}
-
 QString ForpostDialog::percentMask(const QString &sss)
 {
     QString s=sss;
@@ -290,6 +271,17 @@ QString ForpostDialog::captchaMask(const QString &s)
 
 void ForpostDialog::onEditContextMenuRequested(const QPoint & )
 {
+    QMenu* editContextMenu = ui->plainTextEdit->createStandardContextMenu();
+    QAction pasteUrlAct ("Unmasked");
+    QAction pasteUrlAct1 ("Percent");
+    QAction pasteUrlAct2 ("Pink");
+    QAction pasteUrlAct3 ("Captcha");
+    QMenu pasteUrlMenu ("Paste Url");
+    pasteUrlMenu.addAction(&pasteUrlAct);
+    pasteUrlMenu.addAction(&pasteUrlAct1);
+    pasteUrlMenu.addAction(&pasteUrlAct2);
+    pasteUrlMenu.addAction(&pasteUrlAct3);
+    editContextMenu->addMenu(&pasteUrlMenu);
     QString url;
     if( QClipboard* c = QApplication::clipboard() )
     {
@@ -300,25 +292,21 @@ void ForpostDialog::onEditContextMenuRequested(const QPoint & )
         }
     }
     bool emp = url.isEmpty();
-    pasteUrlMenu->setEnabled(!emp);
+    pasteUrlMenu.setEnabled(!emp);
     QAction * act = editContextMenu ->exec(QCursor::pos());
-    if (act == pasteUrlAct || act == pasteUrlAct1 || act == pasteUrlAct2 || act == pasteUrlAct3)
+    if (act == &pasteUrlAct || act == &pasteUrlAct1 || act == &pasteUrlAct2 || act == &pasteUrlAct3)
     {
         QTextCursor  cursor = ui->plainTextEdit->textCursor();
-        int pos = cursor.position();
         QString s1;
-        if (act == pasteUrlAct)
+        if (act == &pasteUrlAct)
             s1 = url;
-        else if (act == pasteUrlAct1)
+        else if (act == &pasteUrlAct1)
             s1 = percentMask(url);
-        else if (act == pasteUrlAct2)
+        else if (act == &pasteUrlAct2)
             s1 = pinkMask(url);
-        else if (act == pasteUrlAct3)
+        else if (act == &pasteUrlAct3)
             s1 = captchaMask(url);
-        QString sss = ui->plainTextEdit->toPlainText();
-        QString res = sss.mid(0, pos) + s1 + sss.mid(pos);
-        ui->plainTextEdit->setPlainText(res);
-
+        ui->plainTextEdit->insertPlainText(s1);
     }
 
 }

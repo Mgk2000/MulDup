@@ -28,6 +28,7 @@ public:
     void discardFilter();
     QVector<File*> files,  savedFiles ;
     bool showInBytes;
+    bool showBirth;
     bool sortOrder[7] = {false};
     void sortByName();
     void sortBySize();
@@ -78,6 +79,8 @@ public:
     void fillOpenWithActions();
     void searchBySize(const QString & s);
     void copyFileSize(File *file);
+    bool showBirth() const;
+
 public slots:
     void headerPressed(int index);
     void filterSearchPressed();
@@ -85,6 +88,7 @@ public slots:
     void filterDiscardPressed();
     void bytesClicked();
     void mbytesClicked();
+    void birthClicked();
     void unsortPressed();
     void onRefresh();
     void timerShot();
