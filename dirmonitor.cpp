@@ -26,6 +26,7 @@ bool DirMonitorThread::HandleChangeEvent(FILE_NOTIFY_INFORMATION* event)
         case FILE_ACTION_REMOVED:
             qDebug() << "Removed:" << QString::fromWCharArray(event->FileName, name_len);
             changedFiles.append(fullFn);
+            deletedFiles.append(fullFn);
             return true;
         case FILE_ACTION_MODIFIED:
         {

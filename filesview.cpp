@@ -47,9 +47,9 @@ FilesView::FilesView( QWidget* parent,FilterForm *  ff,  QVector<File *> *_files
     horizontalHeader()->setStretchLastSection(true) ;
     setColumnWidth(0, mainWin()->width() / 2);
     horizontalHeader()->setMinimumSectionSize(30);
-    setColumnWidth(3, 30);
-    setColumnWidth(4, 30);
-    setColumnWidth(5, 30);
+    setColumnWidth(3, 150);
+    setColumnWidth(4, 150);
+    setColumnWidth(5, 150);
 
     connect (horizontalHeader(), SIGNAL(sectionPressed(int)), this, SLOT(headerPressed(int)));
     //horizontalHeader()->setHighlightSections(false);
@@ -662,9 +662,10 @@ void FilesView::deleteFile(int row, const QString &fname)
     qDebug() << btn;
     if (btn == QMessageBox::Yes)
     {
-        QFile::remove(fname);
+        DeleteFileThread * df = new DeleteFileThread(fname);
+        df->start();
         fmodel.files[row]->exists = false;
-        fmodel.refresh();
+//        fmodel.refresh();
     }
 }
 
@@ -766,4 +767,17 @@ void FilesView::timerShot()
 
 FilesView::OpenWith::OpenWith(const QString &_menu, const QString &_program) : action (_menu), program(_program)
 {
+}
+
+DeleteFileThread::DeleteFileThread(const QString &fn) : QThread(), fname(fn)
+{
+    connect(this, SIGNAL(finished()),this,SLOT(deleteLater()));
+}
+
+void DeleteFileThread::run()
+{
+    if (QFile::remove(fname))
+        qDebug() << fname << "deleted";
+    else
+        qDebug() << fname << "not deleted";
 }

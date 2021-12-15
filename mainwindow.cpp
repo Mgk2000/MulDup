@@ -55,7 +55,7 @@ MainWindow::MainWindow(QWidget *parent)
     for (int i=1; i>=0; i--)
         views.append(setFilesTable(i, &files));
 //    mainView = setFilesTable(0, &files);
-    forpostDialog = new ForpostDialog(this);
+    forpostDialog = new ForpostDialog(0);
     freenetClipboard = new FreenetClipboard(0);
     freenetWindow = new FreenetWindow(0);
     if( QClipboard* c = QApplication::clipboard() )
@@ -534,6 +534,8 @@ void MainWindow::adjustFilesFromCopy()
                     files[i]->MD5 = cf->MD5;
                 if (files[i]->ed2k == "")
                     files[i]->ed2k = cf->ed2k;
+                if (files[i]->forpost == "")
+                    files[i]->forpost = cf->forpost;
                 goto nexti;
             }
         File* f = new File(*cf);
@@ -864,17 +866,46 @@ void MainWindow::onDirChanged( DirMonitorThread* dirMonitor)
     qDebug() << "OnDirChanged 1 addedFiles.count() = " << dirMonitor->addedFiles.count();
     for (int i =0 ; i< dirMonitor->addedFiles.count(); i++)
     {
+        QString fn = QFileInfo(dirMonitor->addedFiles[i]).fileName();
+        QString ffn = QFileInfo(dirMonitor->addedFiles[i]).filePath();
+        for (int j=0; j< dirMonitor->deletedFiles.count(); j++)
+        {
+            QString dfn = QFileInfo(dirMonitor->deletedFiles[j]).fileName();
+            QString fdfn = QFileInfo(dirMonitor->deletedFiles[j]).filePath();
+            if (fn == dfn)
+            {
+                qDebug() << "Moved " << fn;
+                for (int k = 0; k< files.count(); k++)
+                    if(files[k]->exists  && files[k]->filePath() == fdfn)
+                    {
+                        files[k]->setFileName(ffn);
+                        //storeFile(files[k]);
+                        for (int l=0; l< dirMonitor->changedFiles.count(); l++)
+                            if (dirMonitor->changedFiles[l] == fdfn)
+                            {
+                                dirMonitor->changedFiles[l]="";
+                                break;
+                            }
+                        goto nextAdded;
+                    }
+            }
+        }
+        {
         File * f = new File(dirMonitor->addedFiles[i]);
         f->id = files.count()+ 1;
         files.append(f);
         addStoreFile(f);
         qDebug() << "Added" << f->name;
         qInfo() << "Added" << f->name << " -> " << f->info->absoluteDir().path();
+        }
+        nextAdded:
         changed = true;
     }
     qDebug() << "OnDirChanged 2 changedFiles.count() = " << dirMonitor->changedFiles.count();
     for (int i =0 ; i< dirMonitor->changedFiles.count(); i++)
     {
+        if (dirMonitor->changedFiles[i].isEmpty())
+            continue;
         for (int j =files.count()-1; j>=0 ; j--)
         {
             qDebug() << "OnDirChanged 2.1 " << files[j]->filePath();
@@ -912,6 +943,7 @@ void MainWindow::onDirChanged( DirMonitorThread* dirMonitor)
     qDebug() << "OnDirChanged 4";
     dirMonitor->addedFiles.clear();
     dirMonitor->changedFiles.clear();
+    dirMonitor->deletedFiles.clear();
     dirMonitor->renamedFiles.clear();
     if (changed)
         lastAddedTime = QDateTime::currentSecsSinceEpoch();

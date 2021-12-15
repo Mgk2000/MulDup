@@ -39,6 +39,7 @@ HEADERS += \
     hash.h \
     hashthread.h \
     mainwindow.h \
+    todo.h \
     trafficlights.h
 
 FORMS += \

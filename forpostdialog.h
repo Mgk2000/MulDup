@@ -41,6 +41,7 @@ public:
     QString percentMask(const QString & s);
     QString pinkMask(const QString & s);
     QString captchaMask(const QString & s);
+    QString downloadMask(const QString & s);
 
 private slots:
     void onEditContextMenuRequested(const QPoint&);

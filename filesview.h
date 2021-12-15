@@ -7,6 +7,7 @@
 #include <QMutex>
 #include <QAction>
 #include <QProcess>
+#include <QThread>
 
 class MainWindow;
 class File;
@@ -94,6 +95,13 @@ public slots:
     void timerShot();
     //void showExistingClicked (bool checked);
     //void showDeletedClicked (bool checked);
+};
+class DeleteFileThread : public QThread
+{
+public:
+    DeleteFileThread (const QString & fn);
+    void run() override;
+    QString fname;
 };
 
 #endif // FILESVIEW_H

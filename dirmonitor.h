@@ -33,7 +33,7 @@ public:
     QString renamedDir;
     bool handleRet;
     RenamedFile renamedFile;
-    QVector <QString> addedFiles, changedFiles;
+    QVector <QString> addedFiles, changedFiles, deletedFiles;
     QVector <RenamedFile> renamedFiles;
     volatile bool onDirChangeRunning;
     QString dir;

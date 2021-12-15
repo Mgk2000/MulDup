@@ -58,15 +58,25 @@ void ForpostDialog::setVideo(File* _file, const QString &_video)
         ui->projectFolderEdit->setText(forpostFolder + "/" + projectName);
     QFileInfo f(video);
     videoDir = f.absolutePath();
-    ui->videoLabel->setText(video);
     previewCreationStarted = false;
     archiveCreationStarted = false;
     ui->sizeEdit->setText(QString("%1").arg(QFileInfo(video).size()));
     timeId = startTimer(500);
     if (!readForpost())
         createNewForpost();
-}
+    qint64 i500 = 500 * 1024 * 1024;
+    int partsize = i500;
+//    ui->volumeSizeEdit->setText("500");
+    if (f.size() > i500)
+    {
+        int nparts = f.size() / i500 + 1;
+        partsize = (f.size() + 1024*1024-1) / nparts;
+        if (partsize > i500)
+            partsize = i500;
+    }
+    ui->volumeSizeEdit->setText(QString("%1").arg ((partsize + 1024*1024-1) / (1024*1024)));
 
+}
 QString ForpostDialog::parentFolder()
 {
     return ui->parentFolderLabel->text();
@@ -130,7 +140,7 @@ void ForpostDialog::timerEvent(QTimerEvent *)
         QString previewName = projectDirName() + "/" + file->name + ".jpg";
         if (!f.rename(previewName))
             qDebug() << "Cannot move preview from " << videoDir << " to " << projectDirName();
-
+        return;
         QString previewArcName = "Pv" + ui->archiveName->text();
         QStringList arguments;
         arguments << "a";
@@ -269,6 +279,12 @@ QString ForpostDialog::captchaMask(const QString &s)
     return ss;
 }
 
+QString ForpostDialog::downloadMask(const QString &s)
+{
+    QString ss = "[url=" + s + "]Download[/url]";
+    return ss;
+}
+
 void ForpostDialog::onEditContextMenuRequested(const QPoint & )
 {
     QMenu* editContextMenu = ui->plainTextEdit->createStandardContextMenu();
@@ -276,11 +292,13 @@ void ForpostDialog::onEditContextMenuRequested(const QPoint & )
     QAction pasteUrlAct1 ("Percent");
     QAction pasteUrlAct2 ("Pink");
     QAction pasteUrlAct3 ("Captcha");
+    QAction pasteUrlAct4 ("Download");
     QMenu pasteUrlMenu ("Paste Url");
     pasteUrlMenu.addAction(&pasteUrlAct);
     pasteUrlMenu.addAction(&pasteUrlAct1);
     pasteUrlMenu.addAction(&pasteUrlAct2);
     pasteUrlMenu.addAction(&pasteUrlAct3);
+    pasteUrlMenu.addAction(&pasteUrlAct4);
     editContextMenu->addMenu(&pasteUrlMenu);
     QString url;
     if( QClipboard* c = QApplication::clipboard() )
@@ -294,7 +312,7 @@ void ForpostDialog::onEditContextMenuRequested(const QPoint & )
     bool emp = url.isEmpty();
     pasteUrlMenu.setEnabled(!emp);
     QAction * act = editContextMenu ->exec(QCursor::pos());
-    if (act == &pasteUrlAct || act == &pasteUrlAct1 || act == &pasteUrlAct2 || act == &pasteUrlAct3)
+    if (act == &pasteUrlAct || act == &pasteUrlAct1 || act == &pasteUrlAct2 || act == &pasteUrlAct3 || act == &pasteUrlAct4)
     {
         QTextCursor  cursor = ui->plainTextEdit->textCursor();
         QString s1;
@@ -306,7 +324,9 @@ void ForpostDialog::onEditContextMenuRequested(const QPoint & )
             s1 = pinkMask(url);
         else if (act == &pasteUrlAct3)
             s1 = captchaMask(url);
-        ui->plainTextEdit->insertPlainText(s1);
+        else if (act == &pasteUrlAct4)
+            s1 = downloadMask(url);
+        ui->plainTextEdit->insertPlainText(s1+"\r\n");
     }
 
 }
