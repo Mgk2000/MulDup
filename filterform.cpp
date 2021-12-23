@@ -100,6 +100,15 @@ void FilterForm::clearMBytes()
 
 }
 
+QString FilterForm::stringForTab() const
+{
+    if (!ui->name1Edit->text().isEmpty())
+        return ui->name1Edit->text();
+    else if (!ui->sizeEqEdit->text().isEmpty())
+        return ui->sizeEqEdit->text();
+    return "";
+}
+
 
 
 void FilterForm::on_clearButton_clicked()

@@ -87,6 +87,8 @@ public:
     void fillLiatFromtable(const QString& table, QVector<File*> & ffiles);
     void adjustFilesFromCopy();
     bool dirXExists();
+    int newTab();
+    void setTabText(const QString & s);
 private slots:
     void on_actionUpdate_All_triggered();
 
@@ -125,6 +127,7 @@ private slots:
 
 public slots:
     void onLog(const QString& s, bool newLine);
+    void onTabContextMenuRequested(const QPoint &);
 
 private:
     Ui::MainWindow *ui;

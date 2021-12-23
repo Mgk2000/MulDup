@@ -30,6 +30,7 @@ public:
     void setSizeFilter(const QString &s);
     void clear();
     void clearMBytes();
+    QString stringForTab() const;
 private slots:
     void on_clearButton_clicked();
     void on_sizeMoreSpinBox_valueChanged(int arg1);

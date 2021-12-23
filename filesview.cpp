@@ -224,6 +224,7 @@ void FilesView::filterSearchPressed()
     filterForm->filter.execute(fmodel.files);
     fmodel.files = filterForm->filter.files;
     fmodel.refresh();
+    mainWin()->setTabText(filterForm->stringForTab());
     qInfo() << "Files=" << fmodel.files.count();
 }
 
@@ -694,6 +695,11 @@ void FilesView::copyFileSize(File *file)
 bool FilesView::showBirth() const
 {
     return filterForm->birthCheckBox()->isChecked();
+}
+
+void FilesView::setTabText(const QString &s)
+{
+    mainWin()->setTabText(s);
 }
 
 bool FilesView::showExisting()

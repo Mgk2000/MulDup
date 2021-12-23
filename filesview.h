@@ -81,7 +81,7 @@ public:
     void searchBySize(const QString & s);
     void copyFileSize(File *file);
     bool showBirth() const;
-
+    void setTabText(const QString & s);
 public slots:
     void headerPressed(int index);
     void filterSearchPressed();

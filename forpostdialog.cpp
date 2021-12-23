@@ -238,9 +238,10 @@ void ForpostDialog::createNewForpost()
 {
     QString s;
     s+= "[VID] \r\n\r\n\r\n";
-    s+= "Preview backup:\r\n\r\n\r\n";
+//    s+= "Preview backup:\r\n\r\n\r\n";
+    s+= "\r\n\r\n\r\n";
     s+= QString("Size: %L2 bytes\r\n").arg(file->size);
-    s+= "Duration: \r\n";
+//    s+= "Duration: \r\n";
     s+= QString("MD5: %1 \r\n\r\n").arg(file->MD5);
     s+= "Video:\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n";
     s+= "P:\r\n";
@@ -268,8 +269,8 @@ QString ForpostDialog::percentMask(const QString &sss)
 
 QString ForpostDialog::pinkMask(const QString &s)
 {
-    int n = s.length() - 4;
-    QString ss = "[url]" + s.mid(0,n) + "[/url]" + "[color=#FF00FF]HogoFog[/color]" + s.mid(n);
+    int n = s.length() - 7;
+    QString ss = "[url]" + s.mid(0,n) + "[/url]" + "[color=#FF00FF]DudukA[/color]" + s.mid(n);
     return ss;
 }
 
@@ -279,9 +280,30 @@ QString ForpostDialog::captchaMask(const QString &s)
     return ss;
 }
 
-QString ForpostDialog::downloadMask(const QString &s)
+QString ForpostDialog::downloadMask(const QString &url)
 {
-    QString ss = "[url=" + s + "]Download[/url]";
+    QString sh = "Download";
+    if (url.contains("anonfiles"))
+        sh = "Anon";
+    else if (url.contains("bayfiles"))
+        sh = "Bay";
+    else if (url.contains("solidfiles"))
+        sh = "Solid";
+    else if (url.contains("1fichier"))
+        sh = "1Fich";
+    else if (url.contains("userscloud"))
+        sh = "Ucloud";
+    else if (url.contains("siasky"))
+        sh = "Siask";
+    else if (url.contains("tusfiles"))
+        sh = "Tusf";
+    else if (url.contains("iobb"))
+        sh = "Intel";
+    else if (url.contains("hxfile"))
+        sh = "HxFil";
+    else if (url.contains("upload.ee"))
+        sh = "UploadEE";
+    QString ss = "[url=" + url + "]" + sh+ "[/url]";
     return ss;
 }
 

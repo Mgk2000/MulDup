@@ -55,6 +55,8 @@ MainWindow::MainWindow(QWidget *parent)
     for (int i=1; i>=0; i--)
         views.append(setFilesTable(i, &files));
 //    mainView = setFilesTable(0, &files);
+    ui->tabWidget->tabBar()->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(ui->tabWidget->tabBar(), SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(onTabContextMenuRequested(const QPoint &)));
     forpostDialog = new ForpostDialog(0);
     freenetClipboard = new FreenetClipboard(0);
     freenetWindow = new FreenetWindow(0);
@@ -567,6 +569,22 @@ bool MainWindow::dirXExists()
         return false;
     return true;
 }
+
+int MainWindow::newTab()
+{
+    QWidget* newTab = new QWidget(ui->tabWidget);
+    int nt = ui->tabWidget->count();
+    nt = ui->tabWidget->addTab(newTab, QString("Tab %1").arg(nt));
+    FilesView* view = setFilesTable(nt, &files);
+    views.append(view);
+    return nt;
+}
+
+void MainWindow::setTabText(const QString &s)
+{
+    ui->tabWidget->setTabText(ui->tabWidget->currentIndex(), s);
+}
+
 quint64 MainWindow::ed2kSize(const QString &s)
 {
     QString sbeg = s.mid(0, 13);
@@ -1033,6 +1051,28 @@ void MainWindow::on_actionSize_triggered()
 void MainWindow::onLog(const QString &s, bool newLine)
 {
     Log(s, newLine);
+}
+
+void MainWindow::onTabContextMenuRequested(const QPoint & p)
+{
+    if (p.isNull())
+    {
+        qDebug() << "null";
+        return;
+    }
+    int ntab = ui->tabWidget->tabBar()->tabAt(p);
+    qDebug() << "Tab Menu " << ntab;
+    QMenu menu;
+    menu.addAction("New Tab");
+    menu.addAction("Duplicate Tab");
+    if (ntab > 1)
+        menu.addAction("Close Tab");
+    QAction* act = menu.exec(ui->tabWidget->tabBar()->mapToGlobal(p));
+    if (!act)
+        return;
+    qDebug() << act->text();
+    if (act->text() == "New Tab")
+        newTab();
 }
 
 void MainWindow::on_actionSave_table_triggered()
