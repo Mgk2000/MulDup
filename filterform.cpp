@@ -106,7 +106,7 @@ QString FilterForm::stringForTab() const
         return ui->name1Edit->text();
     else if (!ui->sizeEqEdit->text().isEmpty())
         return ui->sizeEqEdit->text();
-    return "";
+    return "<All>";
 }
 
 

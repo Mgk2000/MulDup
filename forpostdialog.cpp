@@ -237,12 +237,17 @@ void ForpostDialog::createProjectFolder()
 void ForpostDialog::createNewForpost()
 {
     QString s;
+    bool addInfo = file->size >= 10 *1024 * 1024;
     s+= "[VID] \r\n\r\n\r\n";
 //    s+= "Preview backup:\r\n\r\n\r\n";
-    s+= "\r\n\r\n\r\n";
-    s+= QString("Size: %L2 bytes\r\n").arg(file->size);
-//    s+= "Duration: \r\n";
-    s+= QString("MD5: %1 \r\n\r\n").arg(file->MD5);
+    if (addInfo)
+        {
+        s+= "\r\n\r\n\r\n";
+        s+= QString("Size: %L2 bytes\r\n").arg(file->size);
+    //    s+= "Duration: \r\n";
+        s+= QString("MD5: %1 \r\n\r\n").arg(file->MD5);
+        }
+    else s+= "\r\n\r\n";
     s+= "Video:\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n";
     s+= "P:\r\n";
     s+=  password + "\r\n";
@@ -284,25 +289,25 @@ QString ForpostDialog::downloadMask(const QString &url)
 {
     QString sh = "Download";
     if (url.contains("anonfiles"))
-        sh = "Anon";
+        sh = " Anon ";
     else if (url.contains("bayfiles"))
-        sh = "Bay";
+        sh = " Bay ";
     else if (url.contains("solidfiles"))
-        sh = "Solid";
+        sh = " Solid ";
     else if (url.contains("1fichier"))
-        sh = "1Fich";
+        sh = " 1Fich ";
     else if (url.contains("userscloud"))
-        sh = "Ucloud";
+        sh = " Ucloud ";
     else if (url.contains("siasky"))
         sh = "Siask";
     else if (url.contains("tusfiles"))
-        sh = "Tusf";
+        sh = " Tusf ";
     else if (url.contains("iobb"))
-        sh = "Intel";
+        sh = " Intel ";
     else if (url.contains("hxfile"))
-        sh = "HxFil";
+        sh = " HxFil ";
     else if (url.contains("upload.ee"))
-        sh = "UploadEE";
+        sh = " UploadEE ";
     QString ss = "[url=" + url + "]" + sh+ "[/url]";
     return ss;
 }
@@ -322,6 +327,8 @@ void ForpostDialog::onEditContextMenuRequested(const QPoint & )
     pasteUrlMenu.addAction(&pasteUrlAct3);
     pasteUrlMenu.addAction(&pasteUrlAct4);
     editContextMenu->addMenu(&pasteUrlMenu);
+    QAction pasteImageAction("Paste [img]");
+    editContextMenu->addAction(&pasteImageAction);
     QString url;
     if( QClipboard* c = QApplication::clipboard() )
     {
@@ -348,9 +355,12 @@ void ForpostDialog::onEditContextMenuRequested(const QPoint & )
             s1 = captchaMask(url);
         else if (act == &pasteUrlAct4)
             s1 = downloadMask(url);
-        ui->plainTextEdit->insertPlainText(s1+"\r\n");
+        if (ui->crCheckBox->isChecked())
+            s1 += "\r\n";
+        ui->plainTextEdit->insertPlainText(s1);
     }
-
+    if (act == &pasteImageAction)
+        ui->plainTextEdit->insertPlainText("[img]" + url + "[/img]");
 }
 
 void ForpostDialog::on_selectParentFolderButton_clicked()
