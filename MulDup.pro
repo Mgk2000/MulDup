@@ -23,6 +23,7 @@ SOURCES += \
     hashthread.cpp \
     main.cpp \
     mainwindow.cpp \
+    showpreviewdialog.cpp \
     trafficlights.cpp
 
 HEADERS += \
@@ -39,6 +40,7 @@ HEADERS += \
     hash.h \
     hashthread.h \
     mainwindow.h \
+    showpreviewdialog.h \
     todo.h \
     trafficlights.h
 
@@ -47,7 +49,8 @@ FORMS += \
     forpostdialog.ui \
     freenetclipboard.ui \
     freenetwindow.ui \
-    mainwindow.ui
+    mainwindow.ui \
+    showpreviewdialog.ui
 
 
 # Default rules for deployment.

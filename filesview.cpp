@@ -139,13 +139,18 @@ void FilesView::contextMenu(int row, const QPoint &pos)
     QAction md5Act("MD5");
     QAction ed2kAct("ed2k");
     QAction renameAct("Rename...");
+    QAction moveAct("Move...");
     QAction forpostAct("Forpost...");
+    QAction showPreviewAct("Show preview");
     if (!file->isPartFile)
     {
         menu.addAction(&md5Act);
         menu.addAction(&ed2kAct);
         menu.addAction(&renameAct);
+        menu.addAction(&moveAct);
         menu.addAction(&forpostAct);
+        if (!file->forpost.isEmpty())
+            menu.addAction(&showPreviewAct);
     }
     QMenu copyMenu("Copy");
     QAction copyFilePathAct("File path");
@@ -174,13 +179,16 @@ void FilesView::contextMenu(int row, const QPoint &pos)
         forpost(file);
     else if (act == & deleteAct)
         deleteFile(row, fname);
+    else if (act == & moveAct)
+         mainWin()->moveFile(file);
     else if (act == & renameAct)
         renameMove(row, fname);
     else if (act == & copyFilePathAct)
         copyFilePath(file);
     else if (act == & copyFileSizeAct)
         copyFileSize(file);
-
+    else if (act == & showPreviewAct)
+        mainWin()->showPreview(file);
     else
         for (int i =0; i< openWithActions.count(); i++)
             if (act == &openWithActions[i]->action)
@@ -663,10 +671,13 @@ void FilesView::deleteFile(int row, const QString &fname)
     qDebug() << btn;
     if (btn == QMessageBox::Yes)
     {
-        DeleteFileThread * df = new DeleteFileThread(fname);
-        df->start();
+        mainWin()->stopDirMonitor();
+ //       DeleteFileThread * df = new DeleteFileThread(fname);
+ //       df->start();
+        QFile::remove(fname);
         fmodel.files[row]->exists = false;
 //        fmodel.refresh();
+        mainWin()->startDirMonitor();
     }
 }
 

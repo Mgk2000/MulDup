@@ -16,6 +16,7 @@ class PartMetFile;
 class TrafficLights;
 class FreenetClipboard;
 class FreenetWindow;
+class ShowPreviewDialog;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -72,6 +73,8 @@ public:
     void timerEvent(QTimerEvent*) override;
     bool busy;
     QList<DirMonitorThread*> dirMonitors;
+    void stopDirMonitor();
+    void startDirMonitor();
     bool addFile(const QString & fn);
     bool ready;
     QMutex mutex;
@@ -89,6 +92,11 @@ public:
     bool dirXExists();
     int newTab();
     void setTabText(const QString & s);
+    QString dirToMove;
+    void moveFile(File* file);
+    ShowPreviewDialog * showPreviewDialog;
+    void showPreview(File* file);
+    void showPreview(const QString & preview);
 private slots:
     void on_actionUpdate_All_triggered();
 

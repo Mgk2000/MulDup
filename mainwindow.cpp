@@ -15,6 +15,7 @@
 #include <QScrollBar>
 #include <QFileSystemWatcher>
 #include <QScreen>
+#include <QFileDialog>
 #include "filterform.h"
 #include "hash.h"
 #include "ed2k.h"
@@ -22,6 +23,7 @@
 #include "dirmonitor.h"
 #include "freenetclipboard.h"
 #include "freenetwindow.h"
+#include "showpreviewdialog.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -84,6 +86,8 @@ MainWindow::MainWindow(QWidget *parent)
     autoHashing = false;
     maxTime = 9223372036854775;
     ui->actionAuto_hashing->setCheckable(true);
+    dirToMove = "U:/Y";
+    showPreviewDialog = new ShowPreviewDialog(this);
 
 }
 
@@ -585,6 +589,44 @@ void MainWindow::setTabText(const QString &s)
     ui->tabWidget->setTabText(ui->tabWidget->currentIndex(), s);
 }
 
+void MainWindow::moveFile(File* file)
+{
+    QFileDialog fd;
+    fd.setDirectory(dirToMove);
+    fd.setFileMode(QFileDialog::Directory);
+    fd.setOption(QFileDialog::ShowDirsOnly);
+    auto rc= fd.exec();
+    if (rc == QDialog::Accepted)
+    {
+        stopDirMonitor();
+        QString newDir = fd.directory().path();
+        qDebug() << newDir;
+        QString newfn =  newDir + "/" + file->name;
+        bool rc = QFile::rename(file->filePath(), newfn);
+        if (rc)
+        {
+            file->setFileName(newfn);
+            Log(file->name + " moved to " + fd.directory().path());
+        }
+        else
+            Log ("move unsuccessful");
+        dirToMove = fd.directory().path();
+        startDirMonitor();
+    }
+
+}
+
+void MainWindow::showPreview(File *file)
+{
+    QString preview = file->forpost + "/" + file->name + ".jpg";
+    showPreview(preview);
+}
+
+void MainWindow::showPreview(const QString &preview)
+{
+    showPreviewDialog->showImage(preview);
+}
+
 quint64 MainWindow::ed2kSize(const QString &s)
 {
     QString sbeg = s.mid(0, 13);
@@ -665,6 +707,18 @@ void MainWindow::timerEvent(QTimerEvent *)
         if (now - lastAddedTime > 5 && !hashThread.isRunning())
             startHashing();
     }
+}
+
+void MainWindow::stopDirMonitor()
+{
+    for (int i =0; i< dirMonitors.count(); i++)
+        dirMonitors[i]->stop();
+}
+
+void MainWindow::startDirMonitor()
+{
+    for (int i =0; i< dirMonitors.count(); i++)
+        dirMonitors[i]->start();
 }
 
 void MainWindow::onClipboardChanged()

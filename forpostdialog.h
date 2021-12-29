@@ -59,6 +59,8 @@ private slots:
 
     void on_saveButton_clicked();
 
+    void on_openDirButton_clicked();
+
 private:
     Ui::ForpostDialog *ui;
 };

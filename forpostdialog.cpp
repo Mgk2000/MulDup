@@ -138,6 +138,7 @@ void ForpostDialog::timerEvent(QTimerEvent *)
         if (!f.exists())
             return;
         QString previewName = projectDirName() + "/" + file->name + ".jpg";
+        QFile::remove(previewName);
         if (!f.rename(previewName))
             qDebug() << "Cannot move preview from " << videoDir << " to " << projectDirName();
         return;
@@ -238,17 +239,19 @@ void ForpostDialog::createNewForpost()
 {
     QString s;
     bool addInfo = file->size >= 10 *1024 * 1024;
-    s+= "[VID] \r\n\r\n\r\n";
+//    s+= "[VID] \r\n\r\n\r\n";
+      s+= "\r\n\r\n";
 //    s+= "Preview backup:\r\n\r\n\r\n";
     if (addInfo)
         {
         s+= "\r\n\r\n\r\n";
+        s += "Name: " + file->name + "\r\n";
         s+= QString("Size: %L2 bytes\r\n").arg(file->size);
     //    s+= "Duration: \r\n";
         s+= QString("MD5: %1 \r\n\r\n").arg(file->MD5);
         }
     else s+= "\r\n\r\n";
-    s+= "Video:\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n";
+    s+= "Video:\r\n\r\n";
     s+= "P:\r\n";
     s+=  password + "\r\n";
     ui->plainTextEdit->setPlainText(s);
@@ -374,6 +377,7 @@ void ForpostDialog::on_selectParentFolderButton_clicked()
     {
         ui->parentFolderLabel->setText(fd.directory().path());
         ui->projectFolderEdit->setText(fd.directory().path() + '/' + projectName);
+        forpostFolder = fd.directory().path();
     }
 }
 
@@ -480,4 +484,15 @@ void ForpostDialog::on_saveButton_clicked()
         mainWin()->storeFile(file);
     }
     else QMessageBox::question(mainWin(),"Save Error", f.errorString());
+}
+
+void ForpostDialog::on_openDirButton_clicked()
+{
+    QString program = "explorer.exe";
+    QStringList arguments;
+    arguments << QString("/n,");
+
+    arguments << file->forpost.replace("/","\\");
+    QProcess::startDetached(program, arguments);
+
 }
