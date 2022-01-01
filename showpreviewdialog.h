@@ -14,13 +14,21 @@ class ShowPreviewDialog : public QDialog
 public:
     explicit ShowPreviewDialog(QWidget *parent = nullptr);
     ~ShowPreviewDialog();
-    void showImage(const QString & fn);
+    void showImage();
     void resizeEvent(QResizeEvent *event);
     QString imageFn;
+    QPixmap origPixmap, newPixmap;
+    int imW, imH, newImW;
+    void run(const QString & fn);
+    void writeLabel();
 private slots:
     void on_okButton_clicked();
 
     void on_editButton_clicked();
+
+    void on_spinBox_valueChanged(int arg1);
+
+    void on_saveButton_clicked();
 
 private:
     Ui::ShowPreviewDialog *ui;

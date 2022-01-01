@@ -594,11 +594,12 @@ void MainWindow::moveFile(File* file)
     QFileDialog fd;
     fd.setDirectory(dirToMove);
     fd.setFileMode(QFileDialog::Directory);
-    fd.setOption(QFileDialog::ShowDirsOnly);
+    //fd.setOption(QFileDialog::ShowDirsOnly);
     auto rc= fd.exec();
     if (rc == QDialog::Accepted)
     {
-        stopDirMonitor();
+        ignoringFiles.clear();
+        ignoringFiles << file->name;
         QString newDir = fd.directory().path();
         qDebug() << newDir;
         QString newfn =  newDir + "/" + file->name;
@@ -611,7 +612,6 @@ void MainWindow::moveFile(File* file)
         else
             Log ("move unsuccessful");
         dirToMove = fd.directory().path();
-        startDirMonitor();
     }
 
 }
@@ -624,7 +624,7 @@ void MainWindow::showPreview(File *file)
 
 void MainWindow::showPreview(const QString &preview)
 {
-    showPreviewDialog->showImage(preview);
+    showPreviewDialog->run(preview);
 }
 
 quint64 MainWindow::ed2kSize(const QString &s)
@@ -709,16 +709,14 @@ void MainWindow::timerEvent(QTimerEvent *)
     }
 }
 
-void MainWindow::stopDirMonitor()
+void MainWindow::addIgnoringFiles(const QString &fn)
 {
-    for (int i =0; i< dirMonitors.count(); i++)
-        dirMonitors[i]->stop();
+    ignoringFiles << fn;
 }
 
-void MainWindow::startDirMonitor()
+void MainWindow::clearIgnoringFiles()
 {
-    for (int i =0; i< dirMonitors.count(); i++)
-        dirMonitors[i]->start();
+    ignoringFiles.clear();
 }
 
 void MainWindow::onClipboardChanged()
@@ -980,8 +978,8 @@ void MainWindow::onDirChanged( DirMonitorThread* dirMonitor)
             continue;
         for (int j =files.count()-1; j>=0 ; j--)
         {
-            qDebug() << "OnDirChanged 2.1 " << files[j]->filePath();
-            qDebug() << "OnDirChanged 2.2 " << dirMonitor->changedFiles[i];
+//            qDebug() << "OnDirChanged 2.1 " << files[j]->filePath();
+//            qDebug() << "OnDirChanged 2.2 " << dirMonitor->changedFiles[i];
             if (dirMonitor->changedFiles[i] == files[j]->filePath())
             {
                 File* f = files[j];

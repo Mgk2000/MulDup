@@ -671,13 +671,13 @@ void FilesView::deleteFile(int row, const QString &fname)
     qDebug() << btn;
     if (btn == QMessageBox::Yes)
     {
-        mainWin()->stopDirMonitor();
+        mainWin()->clearIgnoringFiles();
+        mainWin()->addIgnoringFiles(QFileInfo(fname).fileName());
  //       DeleteFileThread * df = new DeleteFileThread(fname);
  //       df->start();
         QFile::remove(fname);
         fmodel.files[row]->exists = false;
 //        fmodel.refresh();
-        mainWin()->startDirMonitor();
     }
 }
 

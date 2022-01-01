@@ -19,6 +19,7 @@
  improve external move file
 -- add filename to forpost
  add select what include dialog to forpost
+ ed2k clipboard - create list in new tab
  * */
 
 #endif // TODO_H

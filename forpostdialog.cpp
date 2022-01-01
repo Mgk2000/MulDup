@@ -251,7 +251,7 @@ void ForpostDialog::createNewForpost()
         s+= QString("MD5: %1 \r\n\r\n").arg(file->MD5);
         }
     else s+= "\r\n\r\n";
-    s+= "Video:\r\n\r\n";
+    s+= "Video:\r\n\r\n\r\n\r\n\r\n";
     s+= "P:\r\n";
     s+=  password + "\r\n";
     ui->plainTextEdit->setPlainText(s);
@@ -495,4 +495,9 @@ void ForpostDialog::on_openDirButton_clicked()
     arguments << file->forpost.replace("/","\\");
     QProcess::startDetached(program, arguments);
 
+}
+
+void ForpostDialog::on_showPreviewButton_clicked()
+{
+    mainWin()->showPreview(file);
 }

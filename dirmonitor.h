@@ -21,6 +21,8 @@ public:
     virtual ~DirMonitorThread();
     void run() override;
     void stop();
+    void ignore() { ignoring = true;};
+    void stopIgnore() { ignoring = false;};
     void resume();
     void WatchDirectory();
     void handleEvents();
@@ -28,6 +30,7 @@ public:
     HANDLE dirh;
     uint8_t * change_buf;
     bool running;
+    bool ignoring;
     QMutex& mutex();
     QString renamedFrom;
     QString renamedDir;

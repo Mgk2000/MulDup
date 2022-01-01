@@ -11,6 +11,8 @@ bool DirMonitorThread::HandleChangeEvent(FILE_NOTIFY_INFORMATION* event)
 {
     DWORD name_len = event->FileNameLength / sizeof(wchar_t);
     QString fn = QString::fromWCharArray(event->FileName, name_len);
+    if (mainWin->ignoringFiles.contains(QFileInfo(fn).fileName()))
+        return true;
     qDebug() << "HandleChangeEvent fn=" << fn;
     qDebug() << "isVideo=" << isVideo(fn) << "action=" << event;
     if (isVideo(fn))

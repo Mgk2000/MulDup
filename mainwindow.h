@@ -73,8 +73,9 @@ public:
     void timerEvent(QTimerEvent*) override;
     bool busy;
     QList<DirMonitorThread*> dirMonitors;
-    void stopDirMonitor();
-    void startDirMonitor();
+    QStringList ignoringFiles;
+    void addIgnoringFiles(const QString & fn);
+    void clearIgnoringFiles();
     bool addFile(const QString & fn);
     bool ready;
     QMutex mutex;

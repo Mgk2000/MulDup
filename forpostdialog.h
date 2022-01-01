@@ -61,6 +61,8 @@ private slots:
 
     void on_openDirButton_clicked();
 
+    void on_showPreviewButton_clicked();
+
 private:
     Ui::ForpostDialog *ui;
 };
