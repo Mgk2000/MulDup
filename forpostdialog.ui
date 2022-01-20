@@ -313,6 +313,13 @@
           </widget>
          </item>
          <item>
+          <widget class="QCheckBox" name="onTopCheckBox">
+           <property name="text">
+            <string>OnTop</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QPushButton" name="openDirButton">
            <property name="text">
             <string>Open dir...</string>

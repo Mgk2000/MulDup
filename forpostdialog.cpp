@@ -238,7 +238,7 @@ void ForpostDialog::createProjectFolder()
 void ForpostDialog::createNewForpost()
 {
     QString s;
-    bool addInfo = file->size >= 10 *1024 * 1024;
+    bool addInfo = true; //file->size >= 10 *1024 * 1024;
 //    s+= "[VID] \r\n\r\n\r\n";
       s+= "\r\n\r\n";
 //    s+= "Preview backup:\r\n\r\n\r\n";
@@ -311,7 +311,11 @@ QString ForpostDialog::downloadMask(const QString &url)
         sh = " HxFil ";
     else if (url.contains("upload.ee"))
         sh = " UploadEE ";
-    QString ss = "[url=" + url + "]" + sh+ "[/url]";
+    else if (url.contains("linx4"))
+        sh = " Linx ";
+    else if (url.contains("uploda"))
+        sh = " Uploda ";
+    QString ss = "[url=" + url + "]" + sh+ "[/url]  ";
     return ss;
 }
 
@@ -500,4 +504,10 @@ void ForpostDialog::on_openDirButton_clicked()
 void ForpostDialog::on_showPreviewButton_clicked()
 {
     mainWin()->showPreview(file);
+}
+
+void ForpostDialog::on_onTopCheckBox_clicked(bool checked)
+{
+    setWindowFlag(Qt::WindowStaysOnTopHint, checked);
+    show();
 }

@@ -8,7 +8,7 @@
  -- Add filename to forpost
  close tab
  duplicate tab
- last parent folder in forpost
+ --last parent folder in forpost
  delete and add line buttons in forpost
 -- auto open preview with IrfanView
 -- add move file
@@ -20,6 +20,10 @@
 -- add filename to forpost
  add select what include dialog to forpost
  ed2k clipboard - create list in new tab
+ immed reaction to ex part del checkbox
+ open containing dir menu
+ change kmplay to pot
+ update only .part
  * */
 
 #endif // TODO_H

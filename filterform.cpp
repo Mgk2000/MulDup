@@ -78,7 +78,18 @@ bool FilterForm::calcFilter()
     return true;
 }
 
-void FilterForm::setSizeFilter(const QString &s)
+void FilterForm::setSizeFilter(qint64 sz)
+{
+    for (int i=0; i<filter.filterAtoms.count(); i++)
+        delete filter.filterAtoms[i];
+    filter.filterAtoms.clear();
+    clear();
+    FilterSizeEq * fse = new FilterSizeEq(sz);
+    filter.filterAtoms.append(fse);
+    ui->sizeEqEdit->setText(QString("%1").arg(sz));
+}
+
+void FilterForm::setSizeFilterEdit(const QString &s)
 {
     ui->sizeEqEdit->setText(s);
 }

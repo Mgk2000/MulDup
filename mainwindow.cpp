@@ -54,7 +54,8 @@ MainWindow::MainWindow(QWidget *parent)
     dbm->open();
     fillvideoExts();
     files.reserve(100000);
-    for (int i=1; i>=0; i--)
+//    for (int i=1; i>=0; i--)
+    for (int i=0; i<2; i++)
         views.append(setFilesTable(i, &files));
 //    mainView = setFilesTable(0, &files);
     ui->tabWidget->tabBar()->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -722,6 +723,8 @@ void MainWindow::clearIgnoringFiles()
 void MainWindow::onClipboardChanged()
 {
 if( QClipboard* c = QApplication::clipboard() )
+{
+    qDebug() << "Clipboard" << c->text();
     if( const QMimeData* m = c->mimeData() )
         if( m->hasText() )
         {
@@ -730,7 +733,15 @@ if( QClipboard* c = QApplication::clipboard() )
             {
                 QString ss = s.mid(7,1000);
                 qDebug() << "MulDup " << s;
-                views[0]->searchBySize(ss);
+                //views[0]->searchBySize(ss);
+                bool ok;
+                qint64 sz = ss.toULongLong(&ok);
+                if (!ok)
+                {
+                    Log("invali size: "+ss);
+                    return;
+                }
+                views[views.count()-1]->searchBySize(sz);
                 return;
             }
             if (s.length() == 32)
@@ -756,7 +767,7 @@ if( QClipboard* c = QApplication::clipboard() )
             if (!ed2k.isEmpty())
             {
                 qInfo() << ed2k;
-                int nf = searchFileByEd2k(ed2k);
+/*                int nf = searchFileByEd2k(ed2k);
                 if (nf>=0)
                 {
                     File* f = files[nf];
@@ -765,16 +776,18 @@ if( QClipboard* c = QApplication::clipboard() )
                     views[0]->activateFile(f);
                     trafficLights->showLight(2);
                     return;
-                }
+                }*/
 
                 quint64 esize = ed2kSize(s);
     //            qDebug() << "ed2k=" << esize;
+                views[views.count()-1]->searchBySize(esize);
+
                 if (esize >0)
                 {
                    int nf = searchFileBySize(esize);
                    if (nf>=0)
                    {
-                       activateFileRow(nf);
+                       //activateFileRow(nf);
                        trafficLights->showLight(1);
                    }
                    else
@@ -782,6 +795,11 @@ if( QClipboard* c = QApplication::clipboard() )
                 }
             }
         }
+        else
+        {
+            qDebug() << "MimeData=" << m;
+        }
+}
 }
 
 

@@ -236,6 +236,18 @@ void FilesView::filterSearchPressed()
     qInfo() << "Files=" << fmodel.files.count();
 }
 
+void FilesView::searchBySize(qint64 sz)
+{
+    setFiles(&mainWin()->files, false);
+    fmodel.discardFilter();
+    filterForm->filter.files.clear();
+    filterForm->setSizeFilter(sz);
+    filterForm->filter.execute(fmodel.files);
+    fmodel.files = filterForm->filter.files;
+    fmodel.refresh();
+    mainWin()->setTabText("Size");
+}
+
 void FilesView::filterAppendPressed()
 {
     if (!filterForm->calcFilter())
@@ -661,6 +673,8 @@ void FilesView::forpost(File * _file)
 {
     mainWin()->forpostDialog->setVideo(_file, _file->canonicalFilePath());
     mainWin()->forpostDialog->show();
+    mainWin()->forpostDialog->raise();
+    mainWin()->forpostDialog->setWindowState(Qt::WindowActive) ;
 }
 
 void FilesView::deleteFile(int row, const QString &fname)
@@ -699,7 +713,7 @@ void FilesView::copyFileSize(File *file)
 {
     //QClipboard* c = QApplication::clipboard();
     //c->setText(QString("%1").arg(file->size));
-    filterForm->setSizeFilter(QString("%1").arg(file->size));
+    filterForm->setSizeFilterEdit(QString("%1").arg(file->size));
 
 }
 
@@ -762,7 +776,7 @@ void FilesView::searchBySize(const QString &s)
     setFiles(&mainWin()->files, false);
     fmodel.discardFilter();
     filterForm->filter.files.clear();
-    filterForm->setSizeFilter(s);
+    filterForm->setSizeFilterEdit(s);
     filterForm->filter.execute(fmodel.files);
     fmodel.files = filterForm->filter.files;
     fmodel.refresh();

@@ -85,6 +85,7 @@ public:
 public slots:
     void headerPressed(int index);
     void filterSearchPressed();
+    void searchBySize(qint64 sz);
     void filterAppendPressed();
     void filterDiscardPressed();
     void bytesClicked();

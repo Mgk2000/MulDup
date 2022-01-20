@@ -27,7 +27,8 @@ public:
     QCheckBox* birthCheckBox() {return ui->birthCheckBox;}
     Filter filter;
     bool calcFilter();
-    void setSizeFilter(const QString &s);
+    void setSizeFilter (qint64 sz);
+    void setSizeFilterEdit(const QString &s);
     void clear();
     void clearMBytes();
     QString stringForTab() const;

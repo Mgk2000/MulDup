@@ -63,6 +63,8 @@ private slots:
 
     void on_showPreviewButton_clicked();
 
+    void on_onTopCheckBox_clicked(bool checked);
+
 private:
     Ui::ForpostDialog *ui;
 };
