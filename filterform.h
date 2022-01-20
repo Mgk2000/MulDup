@@ -28,6 +28,7 @@ public:
     Filter filter;
     bool calcFilter();
     void setSizeFilter (qint64 sz);
+    void setMD5Filter (const QString& md5);
     void setSizeFilterEdit(const QString &s);
     void clear();
     void clearMBytes();

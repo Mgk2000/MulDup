@@ -245,7 +245,20 @@ void FilesView::searchBySize(qint64 sz)
     filterForm->filter.execute(fmodel.files);
     fmodel.files = filterForm->filter.files;
     fmodel.refresh();
-    mainWin()->setTabText("Size");
+    mainWin()->setTabText("<Size>");
+}
+
+void FilesView::searchByMD5(const QString &md5)
+{
+    setFiles(&mainWin()->files, false);
+    fmodel.discardFilter();
+    filterForm->filter.files.clear();
+    filterForm->setMD5Filter(md5);
+    filterForm->filter.execute(fmodel.files);
+    fmodel.files = filterForm->filter.files;
+    fmodel.refresh();
+    mainWin()->setTabText("<MD5>");
+
 }
 
 void FilesView::filterAppendPressed()

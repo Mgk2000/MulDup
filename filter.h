@@ -55,6 +55,13 @@ struct FilterPart : public FilterAtom
     virtual ~FilterPart() {}
     bool correct (const File& f) override;
 };
+struct FilterMD5 : public FilterAtom
+{
+    FilterMD5(const QString & _md5) : md5(_md5) {}
+    virtual ~FilterMD5() {}
+    bool correct (const File& f) override;
+    QString md5;
+};
 
 class Filter
 {

@@ -89,6 +89,16 @@ void FilterForm::setSizeFilter(qint64 sz)
     ui->sizeEqEdit->setText(QString("%1").arg(sz));
 }
 
+void FilterForm::setMD5Filter(const QString &md5)
+{
+    for (int i=0; i<filter.filterAtoms.count(); i++)
+        delete filter.filterAtoms[i];
+    filter.filterAtoms.clear();
+    clear();
+    FilterMD5 * fm = new FilterMD5(md5);
+    filter.filterAtoms.append(fm);
+}
+
 void FilterForm::setSizeFilterEdit(const QString &s)
 {
     ui->sizeEqEdit->setText(s);

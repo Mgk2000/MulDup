@@ -86,6 +86,7 @@ public slots:
     void headerPressed(int index);
     void filterSearchPressed();
     void searchBySize(qint64 sz);
+    void searchByMD5(const QString& md5);
     void filterAppendPressed();
     void filterDiscardPressed();
     void bytesClicked();

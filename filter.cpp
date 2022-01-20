@@ -55,3 +55,8 @@ bool FilterPart::correct(const File &f)
 {
     return  !f.isPartFile;
 }
+
+bool FilterMD5::correct(const File &f)
+{
+    return f.MD5.toLower() == md5.toLower();
+}

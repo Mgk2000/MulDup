@@ -753,10 +753,13 @@ if( QClipboard* c = QApplication::clipboard() )
                 {
                     int nf = searchFileByEd2k(s);
                     if (nf<0)
+                    {
                         nf = searchFileByMD5(s);
+                        views[views.count()-1]->searchByMD5(s);
+                    }
                     if (nf>=0)
                     {
-                        activateFileRow(nf);
+                        //activateFileRow(nf);
                         trafficLights->showLight(2);
                         return;
                     }
