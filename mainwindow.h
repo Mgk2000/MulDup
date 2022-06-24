@@ -98,6 +98,7 @@ public:
     ShowPreviewDialog * showPreviewDialog;
     void showPreview(File* file);
     void showPreview(const QString & preview);
+    void closeEvent(QCloseEvent *event);
 private slots:
     void on_actionUpdate_All_triggered();
 

@@ -88,9 +88,9 @@ void openWithMPC(File* f)
     QProcess::startDetached(program, arguments);
 }
 
-void openWithKMPlayer(File* f)
+void openWithPotPlayer(File* f)
 {
-    QString program = "e:/KMPlayer/KMPlayer.exe";
+    QString program = "C:/Program Files/DAUM/PotPlayer/PotPlayerMini64.exe";
     QStringList arguments;
     arguments << f->canonicalFilePath();
     QProcess::startDetached(program, arguments);

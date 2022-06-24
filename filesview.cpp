@@ -130,8 +130,8 @@ void FilesView::contextMenu(int row, const QPoint &pos)
     playMenu.addAction(&vlcAct);
     QAction mpcAct("MPC");
     playMenu.addAction(&mpcAct);
-    QAction kmpAct("KMPlayer");
-    playMenu.addAction(&kmpAct);
+    QAction potAct("PotPlayer");
+    playMenu.addAction(&potAct);
     QMenu openWithMenu("Open with");
     menu.addMenu(&openWithMenu);
     for (int i=0; i< openWithActions.count(); i++)
@@ -169,8 +169,8 @@ void FilesView::contextMenu(int row, const QPoint &pos)
         openWithVLC(file);
     else if (act == & mpcAct)
         openWithMPC(file);
-    else if (act == & kmpAct)
-        openWithKMPlayer(file);
+    else if (act == & potAct)
+        openWithPotPlayer(file);
     else if (act == & md5Act)
         calcMD5(file);
     else if (act == & ed2kAct)

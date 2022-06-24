@@ -11,7 +11,7 @@ QString quickHash(const QString& fname);
 void openWithVLC(File* f);
 void openWithExplorer(File* f);
 void openWithMPC(File* f);
-void openWithKMPlayer(File* f);
+void openWithPotPlayer(File* f);
 inline QString partDir(){return "u:\\Downloads\\eMule0.51d\\t";}
 void calcMD5(File * file);
 void calcEd2k(File * file);

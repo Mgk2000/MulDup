@@ -86,7 +86,7 @@ void FilterForm::setSizeFilter(qint64 sz)
     clear();
     FilterSizeEq * fse = new FilterSizeEq(sz);
     filter.filterAtoms.append(fse);
-    ui->sizeEqEdit->setText(QString("%1").arg(sz));
+    //ui->sizeEqEdit->setText(QString("%1").arg(sz));
 }
 
 void FilterForm::setMD5Filter(const QString &md5)
@@ -118,6 +118,7 @@ void FilterForm::clearMBytes()
 {
     ui->sizeLessSpinBox->clear();
     ui->sizeMoreSpinBox->clear();
+    ui->sizeEqEdit->clear();
 
 }
 

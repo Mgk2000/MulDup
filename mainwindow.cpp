@@ -16,6 +16,7 @@
 #include <QFileSystemWatcher>
 #include <QScreen>
 #include <QFileDialog>
+#include <QMessageBox>
 #include "filterform.h"
 #include "hash.h"
 #include "ed2k.h"
@@ -101,7 +102,21 @@ MainWindow::~MainWindow()
     delete freenetWindow;
     delete ui;
 }
-
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    auto btn =QMessageBox::question(this,"Close",
+        QString("Do you really want to close?"),
+        QMessageBox::Yes | QMessageBox::No);
+    qDebug() << btn;
+    if (btn == QMessageBox::Yes)
+    {
+        event->accept();
+    }
+    else
+    {
+        event->ignore();
+    }
+}
 void MainWindow::storeFiles()
 {
     for (int i =0; i< files.length(); i++)
