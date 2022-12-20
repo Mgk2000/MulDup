@@ -31,6 +31,7 @@ public:
     void setMD5Filter (const QString& md5);
     void setSizeFilterEdit(const QString &s);
     void clear();
+    void searchPressed();
     void clearMBytes();
     QString stringForTab() const;
 private slots:
@@ -41,7 +42,7 @@ private slots:
 
 private:
     Ui::FilterForm *ui;
-    QLineEdit* nameEdit[3];
+    ComboEdit* nameEdit[3];
 };
 
 #endif // FILTERFORM_H

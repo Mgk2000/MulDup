@@ -9,6 +9,8 @@ FilterForm::FilterForm(QWidget *parent) :
     nameEdit[0] = ui->name1Edit;
     nameEdit[1] = ui->name2Edit;
     nameEdit[2] = ui->name3Edit;
+    for (int i=0; i<3; i++)
+        nameEdit[i]->setMinimumWidth(500);
     clear();
 }
 
@@ -63,9 +65,9 @@ bool FilterForm::calcFilter()
     }
     for (int i=0; i< 3; i++)
     {
-        if (nameEdit[i]->text().trimmed() != "")
+        if (nameEdit[i]->currentText().trimmed() != "")
         {
-            FilterNameContains * f = new FilterNameContains(nameEdit[i]->text());
+            FilterNameContains * f = new FilterNameContains(nameEdit[i]->currentText());
             filter.filterAtoms.append(f);
         }
     }
@@ -114,6 +116,13 @@ void FilterForm::clear()
     ui->sizeMoreSpinBox->clear();
 }
 
+void FilterForm::searchPressed()
+{
+    ui->name1Edit->pressed();
+    ui->name2Edit->pressed();
+    ui->name3Edit->pressed();
+}
+
 void FilterForm::clearMBytes()
 {
     ui->sizeLessSpinBox->clear();
@@ -124,8 +133,8 @@ void FilterForm::clearMBytes()
 
 QString FilterForm::stringForTab() const
 {
-    if (!ui->name1Edit->text().isEmpty())
-        return ui->name1Edit->text();
+    if (!ui->name1Edit->currentText().isEmpty())
+        return ui->name1Edit->currentText();
     else if (!ui->sizeEqEdit->text().isEmpty())
         return ui->sizeEqEdit->text();
     return "<All>";
@@ -147,3 +156,4 @@ void FilterForm::on_clearMBytesButton_clicked()
 {
     clearMBytes();
 }
+

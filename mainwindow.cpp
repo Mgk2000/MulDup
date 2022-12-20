@@ -5,7 +5,7 @@
 # include "filesview.h"
 #include <QDebug>
 #include <QClipboard>
-#include <QDesktopWidget>
+//#include <QDesktopWidget>
 
 #include <QDirIterator>
 #include <QSqlQuery>
@@ -410,7 +410,8 @@ FilesView* MainWindow::setFilesTable(int ntab, QVector<File *>* _files)
      FilesView* fw = new FilesView(w ,ff, _files);
     QVBoxLayout *viewLayout = new QVBoxLayout(w);
     viewLayout->setParent(w);
-    viewLayout->setMargin(0);
+    //viewLayout->setMargin(0);
+    viewLayout->setContentsMargins(0,0,0,0);
     viewLayout->setSpacing(0);
     viewLayout->addWidget(fw);
     ff->setMinimumHeight(92);
@@ -739,8 +740,15 @@ void MainWindow::onClipboardChanged()
 {
 if( QClipboard* c = QApplication::clipboard() )
 {
+    if (QTime::currentTime().msecsSinceStartOfDay() - lastClipboardTime.msecsSinceStartOfDay() < 2500)
+    {
+        lastClipboardTime = QTime::currentTime();
+        return;
+    }
+    lastClipboardTime = QTime::currentTime();
     qDebug() << "Clipboard" << c->text();
     if( const QMimeData* m = c->mimeData() )
+    {
         if( m->hasText() )
         {
             QString s = m->text();
@@ -757,6 +765,12 @@ if( QClipboard* c = QApplication::clipboard() )
                     return;
                 }
                 views[views.count()-1]->searchBySize(sz);
+                if (views[views.count()-1]->existingFiles>1 || views[views.count()-1]->partFiles>0)
+                    trafficLights->showLight(2);
+                else if (views[views.count()-1]->deletedFiles>0 )
+                    trafficLights->showLight(1);
+                else
+                    trafficLights->showLight(0);
                 return;
             }
             if (s.length() == 32)
@@ -817,6 +831,7 @@ if( QClipboard* c = QApplication::clipboard() )
         {
             qDebug() << "MimeData=" << m;
         }
+    }
 }
 }
 

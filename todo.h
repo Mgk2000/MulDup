@@ -24,6 +24,12 @@
  open containing dir menu
  change kmplay to pot
  update only .part
+
+ find clipboard - light
+ find duplicates - search DB too
+ add find by fname to menu
+ search history (dropbox)
+ find dups +- 512?
  * */
 
 #endif // TODO_H

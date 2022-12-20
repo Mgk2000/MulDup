@@ -71,6 +71,7 @@ public:
     void addAtom(FilterAtom*);
     void execute(QVector<File*>& _files);
     QVector<File*> files;
+    int existingFiles,deletedFiles,partFiles;
 };
 
 #endif // FILTER_H

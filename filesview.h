@@ -82,6 +82,8 @@ public:
     void copyFileSize(File *file);
     bool showBirth() const;
     void setTabText(const QString & s);
+    int existingFiles,deletedFiles,partFiles;
+
 public slots:
     void headerPressed(int index);
     void filterSearchPressed();

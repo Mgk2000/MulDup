@@ -225,6 +225,7 @@ void FilesView::filterSearchPressed()
 {
     //qDebug() << "filterOkPressed";
     setFiles(&mainWin()->files, false);
+    filterForm->searchPressed();
     if (!filterForm->calcFilter())
         return;
     fmodel.discardFilter();
@@ -243,6 +244,9 @@ void FilesView::searchBySize(qint64 sz)
     filterForm->filter.files.clear();
     filterForm->setSizeFilter(sz);
     filterForm->filter.execute(fmodel.files);
+    existingFiles = filterForm->filter.existingFiles;
+    deletedFiles = filterForm->filter.deletedFiles;
+    partFiles = filterForm->filter.partFiles;
     fmodel.files = filterForm->filter.files;
     fmodel.refresh();
     mainWin()->setTabText("<Size>");
@@ -692,20 +696,34 @@ void FilesView::forpost(File * _file)
 
 void FilesView::deleteFile(int row, const QString &fname)
 {
+    mainWin()->clearIgnoringFiles();
+    mainWin()->addIgnoringFiles(QFileInfo(fname).fileName());
     auto btn =QMessageBox::question(mainWin(),"Delete file",
         QString("Do you really want to delete\n") + fname + "?",
         QMessageBox::Yes | QMessageBox::No);
     qDebug() << btn;
     if (btn == QMessageBox::Yes)
+        while (true)
     {
-        mainWin()->clearIgnoringFiles();
-        mainWin()->addIgnoringFiles(QFileInfo(fname).fileName());
  //       DeleteFileThread * df = new DeleteFileThread(fname);
  //       df->start();
-        QFile::remove(fname);
-        fmodel.files[row]->exists = false;
+        if (!QFile::remove(fname))
+        {
+            auto btn =QMessageBox::question(this,"Error",
+                QString("File not deleted. Repeat?"),
+                QMessageBox::Yes | QMessageBox::No);
+//            qDebug() << btn;
+            if (btn != QMessageBox::Yes)
+                break;
+        }
+        else
+        {
+            fmodel.files[row]->exists = false;
+            break;
+        }
 //        fmodel.refresh();
     }
+    mainWin()->clearIgnoringFiles();
 }
 
 void FilesView::deleteDeleted(File *file)
@@ -713,7 +731,9 @@ void FilesView::deleteDeleted(File *file)
     QString s = QString("delete from files where (fexists=0 and size=%1 and birth=%2)").
             arg(file->size).arg(file->birth.toMSecsSinceEpoch());
     QSqlQuery query(s);
+//    qDebug() << query.lastError();
     commit();
+//    qDebug() << query.lastError();
 }
 
 void FilesView::copyFilePath(File *file)

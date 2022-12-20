@@ -4,6 +4,7 @@
 #include <QFileSystemWatcher>
 #include <QMainWindow>
 #include <QTextBrowser>
+#include <QTime>
 #include "dbmanager.h"
 #include "dir.h"
 #include "file.h"
@@ -99,6 +100,7 @@ public:
     void showPreview(File* file);
     void showPreview(const QString & preview);
     void closeEvent(QCloseEvent *event);
+    QTime lastClipboardTime;
 private slots:
     void on_actionUpdate_All_triggered();
 
